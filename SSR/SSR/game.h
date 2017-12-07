@@ -3,6 +3,7 @@
 #define GAME
 
 #include <SFML/Graphics.hpp>
+#include "Player.h"
 
 class Game
 {
@@ -22,6 +23,7 @@ private:
 	
 	void setupFontAndText();
 	void setupSprite();
+	void initializeObjects();
 
 	sf::RenderWindow m_window; // main SFML window
 	sf::Font m_ArialBlackfont; // font used by message
@@ -30,6 +32,7 @@ private:
 	sf::Sprite m_logoSprite; // sprite used for sfml logo
 	bool m_exitGame; // control exiting game
 
+	Player p1;
 };
 
 #endif // !GAME

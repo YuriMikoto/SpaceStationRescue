@@ -8,12 +8,17 @@ public:
 	~Player();
 	void Draw(sf::RenderWindow &window);
 	void Update();
-	void HandleInput();
+	void SetupSprite();
+
+	void Thrusters(float acceleration);
+	void Steer(float steering);
 private:
+	float pi = 3.14159265359;
+
 	sf::Vector2f position;
-	sf::Vector2f velocity;
+	float velocity; //Current speed. Paired with orientation.
+	float orientation; //Current direction. Paired with velocity.
 	sf::Texture texture;
 	sf::Sprite spr;
-
 };
 

@@ -3,10 +3,8 @@
 #include "Game.h"
 #include <iostream>
 
-
-
 Game::Game() :
-	m_window{ sf::VideoMode{ 800, 600, 32 }, "SFML Game" },
+	m_window{ sf::VideoMode{ 1600, 1200, 32 }, "Space Station Rescue" },
 	m_exitGame{false} //when true game will exit
 {
 	setupFontAndText(); // load font 
@@ -18,6 +16,10 @@ Game::~Game()
 {
 }
 
+void Game::initializeObjects()
+{
+	p1 = Player();
+}
 
 void Game::run()
 {
@@ -47,16 +49,34 @@ void Game::processEvents()
 	sf::Event event;
 	while (m_window.pollEvent(event))
 	{
-		if ( sf::Event::Closed == event.type) // window message
+		if (event.type == sf::Event::Closed) // window message
 		{
 			m_window.close();
 		}
-		if (sf::Event::KeyPressed == event.type) //user key press
+		if (event.type == sf::Event::KeyPressed) //user key press
 		{
-			if (sf::Keyboard::Escape == event.key.code)
+			if (event.key.code == sf::Keyboard::Escape)
 			{
 				m_exitGame = true;
 			}
+
+			else if (event.key.code == sf::Keyboard::W)
+			{
+				p1.Thrusters(2);
+			}
+			else if (event.key.code == sf::Keyboard::S)
+			{
+				p1.Thrusters(-2);
+			}
+			else if (event.key.code == sf::Keyboard::A)
+			{
+				p1.Steer(-6);
+			}
+			else if (event.key.code == sf::Keyboard::D)
+			{
+				p1.Steer(6);
+			}
+
 		}
 	}
 }
@@ -71,6 +91,8 @@ void Game::update(sf::Time t_deltaTime)
 	{
 		m_window.close();
 	}
+
+	p1.Update();
 }
 
 /// <summary>
@@ -78,9 +100,12 @@ void Game::update(sf::Time t_deltaTime)
 /// </summary>
 void Game::render()
 {
-	m_window.clear(sf::Color::White);
-	m_window.draw(m_welcomeMessage);
-	m_window.draw(m_logoSprite);
+	m_window.clear(sf::Color::Black);
+	//m_window.draw(m_welcomeMessage);
+	//m_window.draw(m_logoSprite);
+
+	p1.Draw(m_window);
+
 	m_window.display();
 }
 
@@ -116,4 +141,6 @@ void Game::setupSprite()
 	}
 	m_logoSprite.setTexture(m_logoTexture);
 	m_logoSprite.setPosition(300.0f, 180.0f);
+
+	p1.SetupSprite();
 }
