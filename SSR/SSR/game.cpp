@@ -47,6 +47,22 @@ void Game::run()
 void Game::processEvents()
 {
 	sf::Event event;
+	if (p1.forward == true)
+	{
+		p1.Thrusters(p1.thrustSpeed);
+	}
+	if (p1.backwards == true)
+	{
+		p1.Thrusters(p1.thrustSpeed*-1);
+	}
+	if (p1.left == true)
+	{
+		p1.Steer(p1.rotSpeed*-1);
+	}
+	if (p1.right == true)
+	{
+		p1.Steer(p1.rotSpeed);
+	}
 	while (m_window.pollEvent(event))
 	{
 		if (event.type == sf::Event::Closed) // window message
@@ -62,21 +78,49 @@ void Game::processEvents()
 
 			else if (event.key.code == sf::Keyboard::W)
 			{
-				p1.Thrusters(2);
+				//p1.Thrusters(2);
+				p1.forward = true;
 			}
 			else if (event.key.code == sf::Keyboard::S)
 			{
-				p1.Thrusters(-2);
+				//p1.Thrusters(-2);
+				p1.backwards = true;
 			}
 			else if (event.key.code == sf::Keyboard::A)
 			{
-				p1.Steer(-6);
+				//p1.Steer(-6);
+				p1.left = true;
 			}
 			else if (event.key.code == sf::Keyboard::D)
 			{
-				p1.Steer(6);
+				//p1.Steer(6);
+				p1.right = true;
 			}
 
+		}
+		if (event.type == sf::Event::KeyReleased)
+		{
+
+			if (event.key.code == sf::Keyboard::W)
+			{
+				//p1.Thrusters(2);
+				p1.forward = false;
+			}
+			else if (event.key.code == sf::Keyboard::S)
+			{
+				//p1.Thrusters(-2);
+				p1.backwards = false;
+			}
+			else if (event.key.code == sf::Keyboard::A)
+			{
+				//p1.Steer(-6);
+				p1.left = false;
+			}
+			else if (event.key.code == sf::Keyboard::D)
+			{
+				//p1.Steer(6);
+				p1.right = false;
+			}
 		}
 	}
 }

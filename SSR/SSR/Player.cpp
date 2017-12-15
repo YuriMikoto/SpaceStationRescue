@@ -22,13 +22,24 @@ void Player::Draw(sf::RenderWindow &window)
 
 void Player::Update()
 {
+	if (forward == false || backwards == false)
+	{
+		velocity /= frictionDiv;
+	}
 	position.x += velocity * std::sin(orientation * pi/180);
 	position.y -= velocity * std::cos(orientation * pi/180);
 }
 
 void Player::Thrusters(float acceleration)
 {
-	velocity += acceleration;
+
+	if (velocity < maxSpeed&&velocity>maxSpeed*-1)
+	{
+		velocity += acceleration;
+	}
+
+
+
 }
 
 void Player::Steer(float steering)

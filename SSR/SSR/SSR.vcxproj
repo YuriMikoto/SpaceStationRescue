@@ -21,14 +21,18 @@
   <ItemGroup>
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Square.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyTypes.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Square.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\pictures\SFML-LOGO.png" />
