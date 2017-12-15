@@ -16,10 +16,10 @@ public:
 	bool backwards;
 	bool left;
 	bool right;
-	float maxSpeed=8;
-	float thrustSpeed=0.1;
-	float frictionDiv = 1.1;
-	float rotSpeed=0.02;
+	float maxSpeed;
+	float thrustSpeed;
+	float frictionDiv;
+	float rotSpeed;
 private:
 	float pi = 3.14159265359;
 

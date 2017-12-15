@@ -7,6 +7,10 @@ Player::Player()
 	position = sf::Vector2f(800, 600);
 	velocity = 0;
 	orientation = 0; //Facing north.
+	maxSpeed = 8;
+	thrustSpeed = 0.1;
+	frictionDiv = 1.1;
+	rotSpeed = 0.02;
 }
 
 Player::~Player()
