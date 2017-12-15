@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML\Graphics.hpp>
-
+#include "TileTypes.h"
 class Square
 {
 public:
@@ -11,5 +11,9 @@ public:
 	sf::Vector2f size;
 	sf::Vector2f center;
 	int weight;//for pathfinding
+	int tileType;
+	int type;
+	void setTileType(int i);
+	int returnTileType();
 };
 
