@@ -10,7 +10,7 @@ Player::Player()
 	maxSpeed = 8;
 	thrustSpeed = 0.1;
 	frictionDiv = 1.1;
-	rotSpeed = 0.02;
+	rotSpeed = 1;
 }
 
 Player::~Player()
@@ -49,6 +49,30 @@ void Player::Thrusters(float acceleration)
 void Player::Steer(float steering)
 {
 	orientation += steering;
+}
+
+void Player::Fire()
+{
+	sf::Vector2f bulletPos = position;
+	bulletPos.x += (texture.getSize().y/5) * std::sin(orientation * pi / 180);
+	bulletPos.y -= (texture.getSize().y/5) * std::cos(orientation * pi / 180);
+	bullets.push_back(new Bullet(bulletPos, orientation));
+}
+
+void Player::DrawBullets(sf::RenderWindow &window)
+{
+	for (int i = 0; i < bullets.size(); i++)
+	{
+		if (bullets[i]->alive)
+		{
+			bullets[i]->Draw(window);
+		}	
+	}
+}
+
+std::vector<Bullet*> Player::getBullets()
+{
+	return bullets;
 }
 
 void Player::SetupSprite()

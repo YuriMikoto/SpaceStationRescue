@@ -1,17 +1,23 @@
 #pragma once
 #include <SFML\Graphics.hpp>
 #include <vector>//might be useful for a vector of bullets
+
+#include "Bullet.h"
+
 class Player
 {
 public:
 	Player();
 	~Player();
 	void Draw(sf::RenderWindow &window);
+	void DrawBullets(sf::RenderWindow &window);
 	void Update();
 	void SetupSprite();
+	std::vector<Bullet*> getBullets();
 
 	void Thrusters(float acceleration);
 	void Steer(float steering);
+	void Fire();
 	bool forward;
 	bool backwards;
 	bool left;
@@ -28,5 +34,6 @@ private:
 	float orientation; //Current direction. Paired with velocity.
 	sf::Texture texture;
 	sf::Sprite spr;
+	std::vector<Bullet*> bullets;
 };
 

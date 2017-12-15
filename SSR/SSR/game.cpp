@@ -96,6 +96,10 @@ void Game::processEvents()
 				//p1.Steer(6);
 				p1.right = true;
 			}
+			else if (event.key.code == sf::Keyboard::Space)
+			{//Fire a bullet.
+				p1.Fire();
+			}
 
 		}
 		if (event.type == sf::Event::KeyReleased)
@@ -137,6 +141,18 @@ void Game::update(sf::Time t_deltaTime)
 	}
 
 	p1.Update();
+	for (int i = 0; i < p1.getBullets().size(); i++)
+	{
+		p1.getBullets()[i]->Update();
+	}
+	//Check vector of player bullets for dead bullets (!alive) and remove them from the vector.
+	//Update vector of enemies.
+	//Update vector of enemy bullets and missiles. Remove dead bullets.
+	//Update vector of Workers.
+
+	//Check for collision between player bullet and any enemy.
+	//Check for collision between player and enemy bullet, missile, or body.
+	//Check for collision between player and Worker. 
 }
 
 /// <summary>
@@ -149,6 +165,10 @@ void Game::render()
 	//m_window.draw(m_logoSprite);
 
 	p1.Draw(m_window);
+	for (int i = 0; i < p1.getBullets().size(); i++)
+	{
+		p1.getBullets()[i]->Draw(m_window);
+	}
 
 	m_window.display();
 }
