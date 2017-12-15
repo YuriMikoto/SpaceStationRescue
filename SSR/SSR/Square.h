@@ -9,6 +9,7 @@ public:
 	~Square();
 	sf::Vector2f pos;
 	sf::Vector2f size;
+	sf::Vector2f center;
 	int weight;//for pathfinding
 };
 
