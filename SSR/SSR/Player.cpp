@@ -75,6 +75,24 @@ std::vector<Bullet*> Player::getBullets()
 	return bullets;
 }
 
+int Player::getHP()
+{
+	return hp;
+}
+
+void Player::damageHP(int dmg)
+{//Reduces the player's HP. Input a negative value to restore HP.
+	hp -= dmg;
+	if (hp < 0)
+	{
+		hp = 0;
+	}
+	else if (hp > 100)
+	{
+		hp = 100;
+	}
+}
+
 void Player::SetupSprite()
 {
 	if (!texture.loadFromFile("ASSETS\\IMAGES\\PlayerShip.png"))

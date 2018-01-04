@@ -1,5 +1,6 @@
 // author Peter Lowe
 
+using namespace std;
 #include "Game.h"
 #include <iostream>
 
@@ -96,10 +97,6 @@ void Game::processEvents()
 				//p1.Steer(6);
 				p1.right = true;
 			}
-			else if (event.key.code == sf::Keyboard::Space)
-			{//Fire a bullet.
-				p1.Fire();
-			}
 
 		}
 		if (event.type == sf::Event::KeyReleased)
@@ -125,6 +122,14 @@ void Game::processEvents()
 				//p1.Steer(6);
 				p1.right = false;
 			}
+			else if (event.key.code == sf::Keyboard::Space)
+			{//Fire a bullet.
+				p1.Fire();
+			}
+			else if (event.key.code == sf::Keyboard::BackSpace)
+			{//Debug command. Reduces player's HP.
+				p1.damageHP(2);
+			}
 		}
 	}
 }
@@ -141,10 +146,34 @@ void Game::update(sf::Time t_deltaTime)
 	}
 
 	p1.Update();
-	for (int i = 0; i < p1.getBullets().size(); i++)
+
+	/*if (p1.getHP() <= 0)
 	{
-		p1.getBullets()[i]->Update();
+		//Game over.
+	}*/
+
+	for (int i = 0; i < p1.getBullets().size(); i++)
+	{//Go through each bullet, check if alive, update position.
+		if (p1.getBullets()[i]->alive)
+		{
+			p1.getBullets()[i]->Update();
+		}
 	}
+
+	/*I am bad at iterators. This is my weak attempt at deleting dead bullets. It's a start, maybe?
+	vector<Bullet*> p1Bullets = p1.getBullets();
+	vector<Bullet*>::iterator p1BulletItr;
+
+	for (p1BulletItr = p1Bullets.begin(); p1BulletItr != p1Bullets.end(); p1BulletItr++)
+	{//Go through each bullet again outside of first iteration, remove dead bullets.
+		if (!(*p1BulletItr)->alive)
+		{
+			//p1.getBullets().erase(p1.getBullets().begin() + i);
+			p1Bullets.erase(p1BulletItr);
+			//p1BulletItr--;
+		}
+	}*/
+
 	//Check vector of player bullets for dead bullets (!alive) and remove them from the vector.
 	//Update vector of enemies.
 	//Update vector of enemy bullets and missiles. Remove dead bullets.
@@ -167,8 +196,16 @@ void Game::render()
 	p1.Draw(m_window);
 	for (int i = 0; i < p1.getBullets().size(); i++)
 	{
-		p1.getBullets()[i]->Draw(m_window);
+		if (p1.getBullets()[i]->alive)
+		{
+			p1.getBullets()[i]->Draw(m_window);
+		}
 	}
+
+	//Draw HP gauge. Changes width depending on HP, does not change height.
+	m_hpGauge.setSize(sf::Vector2f(p1.getHP()*5, m_hpGauge.getSize().y));
+	m_window.draw(m_hpGaugeBack);
+	m_window.draw(m_hpGauge);
 
 	m_window.display();
 }
@@ -205,6 +242,14 @@ void Game::setupSprite()
 	}
 	m_logoSprite.setTexture(m_logoTexture);
 	m_logoSprite.setPosition(300.0f, 180.0f);
+
+	m_hpGaugeBack = sf::RectangleShape(sf::Vector2f(504, 14));
+	m_hpGaugeBack.setPosition(sf::Vector2f(150, 200));
+	m_hpGaugeBack.setFillColor(sf::Color(32, 32, 32, 255));
+
+	m_hpGauge = sf::RectangleShape(sf::Vector2f(p1.getHP()*5, 10));
+	m_hpGauge.setPosition(sf::Vector2f(m_hpGaugeBack.getPosition().x + 2, m_hpGaugeBack.getPosition().y + 2));
+	m_hpGauge.setFillColor(sf::Color::Red);
 
 	p1.SetupSprite();
 }

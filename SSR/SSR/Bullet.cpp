@@ -2,7 +2,7 @@
 #include <iostream>
 
 Bullet::Bullet(sf::Vector2f pos, float angle) 
-	: position(pos), orientation(angle), velocity(10), timetolive(1000)
+	: position(pos), orientation(angle), velocity(10), timetolive(100)
 {
 	SetupSprite();
 }
