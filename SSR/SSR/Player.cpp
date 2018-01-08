@@ -7,6 +7,10 @@ Player::Player()
 	position = sf::Vector2f(800, 600);
 	velocity = 0;
 	orientation = 0; //Facing north.
+	maxSpeed = 8;
+	thrustSpeed = 0.01;
+	frictionDiv = 1.1;
+	rotSpeed = 0.03;
 }
 
 Player::~Player()
@@ -22,18 +26,71 @@ void Player::Draw(sf::RenderWindow &window)
 
 void Player::Update()
 {
-	position.x += velocity * std::sin(orientation * pi/180);
-	position.y -= velocity * std::cos(orientation * pi/180);
+	if (forward == false || backwards == false)
+	{
+		velocity /= frictionDiv;
+	}
+	position.x += velocity * std::sin(orientation * pi / 180);
+	position.y -= velocity * std::cos(orientation * pi / 180);
 }
 
 void Player::Thrusters(float acceleration)
 {
-	velocity += acceleration;
+
+	if (velocity < maxSpeed&&velocity>maxSpeed*-1)
+	{
+		velocity += acceleration;
+	}
+
+
+
 }
 
 void Player::Steer(float steering)
 {
 	orientation += steering;
+}
+
+void Player::Fire()
+{
+	sf::Vector2f bulletPos = position;
+	bulletPos.x += (texture.getSize().y / 5) * std::sin(orientation * pi / 180);
+	bulletPos.y -= (texture.getSize().y / 5) * std::cos(orientation * pi / 180);
+	bullets.push_back(new Bullet(bulletPos, orientation));
+}
+
+void Player::DrawBullets(sf::RenderWindow &window)
+{
+	for (int i = 0; i < bullets.size(); i++)
+	{
+		if (bullets[i]->alive)
+		{
+			bullets[i]->Draw(window);
+		}
+	}
+}
+
+std::vector<Bullet*> Player::getBullets()
+{
+	return bullets;
+}
+
+int Player::getHP()
+{
+	return hp;
+}
+
+void Player::damageHP(int dmg)
+{//Reduces the player's HP. Input a negative value to restore HP.
+	hp -= dmg;
+	if (hp < 0)
+	{
+		hp = 0;
+	}
+	else if (hp > 100)
+	{
+		hp = 100;
+	}
 }
 
 void Player::SetupSprite()

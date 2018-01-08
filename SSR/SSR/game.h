@@ -30,10 +30,11 @@ private:
 	sf::Text m_welcomeMessage; // text used for message on screen
 	sf::Texture m_logoTexture; // texture used for sfml logo
 	sf::Sprite m_logoSprite; // sprite used for sfml logo
+	sf::RectangleShape m_hpGauge; //A rectangle for the HP gauge.
+	sf::RectangleShape m_hpGaugeBack; //Rectangle for the black back of the HP gauge.
 	bool m_exitGame; // control exiting game
 
 	Player p1;
 };
 
 #endif // !GAME
-

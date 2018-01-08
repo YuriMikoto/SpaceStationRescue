@@ -1,11 +1,12 @@
 // author Peter Lowe
 
+using namespace std;
 #include "Game.h"
 #include <iostream>
 
 Game::Game() :
 	m_window{ sf::VideoMode{ 1600, 1200, 32 }, "Space Station Rescue" },
-	m_exitGame{false} //when true game will exit
+	m_exitGame{ false } //when true game will exit
 {
 	setupFontAndText(); // load font 
 	setupSprite(); // load texture
@@ -47,6 +48,22 @@ void Game::run()
 void Game::processEvents()
 {
 	sf::Event event;
+	if (p1.forward == true)
+	{
+		p1.Thrusters(p1.thrustSpeed);
+	}
+	if (p1.backwards == true)
+	{
+		p1.Thrusters(p1.thrustSpeed*-1);
+	}
+	if (p1.left == true)
+	{
+		p1.Steer(p1.rotSpeed*-1);
+	}
+	if (p1.right == true)
+	{
+		p1.Steer(p1.rotSpeed);
+	}
 	while (m_window.pollEvent(event))
 	{
 		if (event.type == sf::Event::Closed) // window message
@@ -62,21 +79,57 @@ void Game::processEvents()
 
 			else if (event.key.code == sf::Keyboard::W)
 			{
-				p1.Thrusters(2);
+				//p1.Thrusters(2);
+				p1.forward = true;
 			}
 			else if (event.key.code == sf::Keyboard::S)
 			{
-				p1.Thrusters(-2);
+				//p1.Thrusters(-2);
+				p1.backwards = true;
 			}
 			else if (event.key.code == sf::Keyboard::A)
 			{
-				p1.Steer(-6);
+				//p1.Steer(-6);
+				p1.left = true;
 			}
 			else if (event.key.code == sf::Keyboard::D)
 			{
-				p1.Steer(6);
+				//p1.Steer(6);
+				p1.right = true;
 			}
 
+		}
+		if (event.type == sf::Event::KeyReleased)
+		{
+
+			if (event.key.code == sf::Keyboard::W)
+			{
+				//p1.Thrusters(2);
+				p1.forward = false;
+			}
+			else if (event.key.code == sf::Keyboard::S)
+			{
+				//p1.Thrusters(-2);
+				p1.backwards = false;
+			}
+			else if (event.key.code == sf::Keyboard::A)
+			{
+				//p1.Steer(-6);
+				p1.left = false;
+			}
+			else if (event.key.code == sf::Keyboard::D)
+			{
+				//p1.Steer(6);
+				p1.right = false;
+			}
+			else if (event.key.code == sf::Keyboard::Space)
+			{//Fire a bullet.
+				p1.Fire();
+			}
+			else if (event.key.code == sf::Keyboard::BackSpace)
+			{//Debug command. Reduces player's HP.
+				p1.damageHP(2);
+			}
 		}
 	}
 }
@@ -93,6 +146,42 @@ void Game::update(sf::Time t_deltaTime)
 	}
 
 	p1.Update();
+
+	/*if (p1.getHP() <= 0)
+	{
+	//Game over.
+	}*/
+
+	for (int i = 0; i < p1.getBullets().size(); i++)
+	{//Go through each bullet, check if alive, update position.
+		if (p1.getBullets()[i]->alive)
+		{
+			p1.getBullets()[i]->Update();
+		}
+	}
+
+	/*I am bad at iterators. This is my weak attempt at deleting dead bullets. It's a start, maybe?
+	vector<Bullet*> p1Bullets = p1.getBullets();
+	vector<Bullet*>::iterator p1BulletItr;
+
+	for (p1BulletItr = p1Bullets.begin(); p1BulletItr != p1Bullets.end(); p1BulletItr++)
+	{//Go through each bullet again outside of first iteration, remove dead bullets.
+	if (!(*p1BulletItr)->alive)
+	{
+	//p1.getBullets().erase(p1.getBullets().begin() + i);
+	p1Bullets.erase(p1BulletItr);
+	//p1BulletItr--;
+	}
+	}*/
+
+	//Check vector of player bullets for dead bullets (!alive) and remove them from the vector.
+	//Update vector of enemies.
+	//Update vector of enemy bullets and missiles. Remove dead bullets.
+	//Update vector of Workers.
+
+	//Check for collision between player bullet and any enemy.
+	//Check for collision between player and enemy bullet, missile, or body.
+	//Check for collision between player and Worker. 
 }
 
 /// <summary>
@@ -105,6 +194,18 @@ void Game::render()
 	//m_window.draw(m_logoSprite);
 
 	p1.Draw(m_window);
+	for (int i = 0; i < p1.getBullets().size(); i++)
+	{
+		if (p1.getBullets()[i]->alive)
+		{
+			p1.getBullets()[i]->Draw(m_window);
+		}
+	}
+
+	//Draw HP gauge. Changes width depending on HP, does not change height.
+	m_hpGauge.setSize(sf::Vector2f(p1.getHP() * 8, m_hpGauge.getSize().y));
+	m_window.draw(m_hpGaugeBack);
+	m_window.draw(m_hpGauge);
 
 	m_window.display();
 }
@@ -141,6 +242,14 @@ void Game::setupSprite()
 	}
 	m_logoSprite.setTexture(m_logoTexture);
 	m_logoSprite.setPosition(300.0f, 180.0f);
+
+	m_hpGaugeBack = sf::RectangleShape(sf::Vector2f(804, 24));
+	m_hpGaugeBack.setPosition(sf::Vector2f(10, 10));
+	m_hpGaugeBack.setFillColor(sf::Color(32, 32, 32, 255));
+
+	m_hpGauge = sf::RectangleShape(sf::Vector2f(p1.getHP() * 8, 20));
+	m_hpGauge.setPosition(sf::Vector2f(m_hpGaugeBack.getPosition().x + 2, m_hpGaugeBack.getPosition().y + 2));
+	m_hpGauge.setFillColor(sf::Color::Red);
 
 	p1.SetupSprite();
 }
