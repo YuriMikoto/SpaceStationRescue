@@ -1,7 +1,9 @@
 #include "Player.h"
 
 
-
+/**
+ * Constructor function. Sets up several set variables.
+ */
 Player::Player()
 {
 	position = sf::Vector2f(800, 600);
@@ -13,10 +15,18 @@ Player::Player()
 	rotSpeed = 0.03;
 }
 
+/**
+ * Destructor function.
+ */
 Player::~Player()
 {
 }
 
+/**
+ * Draws the player sprite on screen.
+ * 
+ * @param window - Specifies the window to draw to.
+ */
 void Player::Draw(sf::RenderWindow &window)
 {
 	spr.setPosition(position);
@@ -24,6 +34,10 @@ void Player::Draw(sf::RenderWindow &window)
 	window.draw(spr);
 }
 
+/**
+ * Called each frame from game.cpp.
+ * Player moves depending on player input. If no input, slows to a stop unless already stopped.
+ */
 void Player::Update()
 {
 	if (forward == false || backwards == false)
@@ -34,6 +48,11 @@ void Player::Update()
 	position.y -= velocity * std::cos(orientation * pi / 180);
 }
 
+/**
+ * Changes the player's speed when W or S are pressed, allowing acceleration and reversing.
+ * 
+ * @param acceleration - Speed at which velocity increases.
+ */
 void Player::Thrusters(float acceleration)
 {
 
@@ -46,11 +65,20 @@ void Player::Thrusters(float acceleration)
 
 }
 
+/**
+ * Rotates the player when A or D is pressed, allowing them to aim.
+ * 
+ * @param steering - Number of (confirm: degrees/radians?) by which to rotate each frame.
+ */
 void Player::Steer(float steering)
 {
 	orientation += steering;
 }
 
+/**
+ * Command the player to fire their weapon.
+ * Creates a bullet at player position pointed in the direction faced.
+ */
 void Player::Fire()
 {
 	sf::Vector2f bulletPos = position;
@@ -59,6 +87,11 @@ void Player::Fire()
 	bullets.push_back(new Bullet(bulletPos, orientation));
 }
 
+/**
+ * Iterate through the player's vector of Bullets and draw each one.
+ *
+ * @param window - Specifies the window to draw to.
+ */
 void Player::DrawBullets(sf::RenderWindow &window)
 {
 	for (int i = 0; i < bullets.size(); i++)
@@ -70,18 +103,30 @@ void Player::DrawBullets(sf::RenderWindow &window)
 	}
 }
 
+/**
+ * Returns the player's vector of Bullets. 
+ */
 std::vector<Bullet*> Player::getBullets()
 {
 	return bullets;
 }
 
+/**
+ * Returns the player's remaining health. 
+ */
 int Player::getHP()
 {
 	return hp;
 }
 
+/**
+ * Reduces the player's health by a certain amount. 
+ * Cannot reduce health below 0. 
+ * 
+ * @param dmg - Damage to be dealt in percentage of maximum health. Input a negative value to restore health instead.
+ */
 void Player::damageHP(int dmg)
-{//Reduces the player's HP. Input a negative value to restore HP.
+{
 	hp -= dmg;
 	if (hp < 0)
 	{
@@ -93,6 +138,10 @@ void Player::damageHP(int dmg)
 	}
 }
 
+/**
+ * Called at game start.
+ * Sets up the sprite for use with all future bullets.
+ */
 void Player::SetupSprite()
 {
 	if (!texture.loadFromFile("ASSETS\\IMAGES\\PlayerShip.png"))

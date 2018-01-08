@@ -148,12 +148,12 @@ void Game::update(sf::Time t_deltaTime)
 	p1.Update();
 
 	/*if (p1.getHP() <= 0)
-	{
-	//Game over.
+	{//TODO: Game over.
+
 	}*/
 
 	for (int i = 0; i < p1.getBullets().size(); i++)
-	{//Go through each bullet, check if alive, update position.
+	{//Go through each bullet; if alive, update position.
 		if (p1.getBullets()[i]->alive)
 		{
 			p1.getBullets()[i]->Update();
