@@ -144,12 +144,12 @@ void Game::update(sf::Time t_deltaTime)
 /// </summary>
 void Game::render()
 {
-	m_window.clear(sf::Color::White);
+	//m_window.clear(sf::Color::White);
 	//m_window.draw(m_welcomeMessage);
 	//m_window.draw(m_logoSprite);
 
 	p1.Draw(m_window);
-
+	gameGrid.render(m_window);
 	m_window.display();
 }
 

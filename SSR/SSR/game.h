@@ -4,7 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Player.h"
-
+#include "Grid.h"
 class Game
 {
 public:
@@ -24,7 +24,7 @@ private:
 	void setupFontAndText();
 	void setupSprite();
 	void initializeObjects();
-
+	Grid gameGrid;
 	sf::RenderWindow m_window; // main SFML window
 	sf::Font m_ArialBlackfont; // font used by message
 	sf::Text m_welcomeMessage; // text used for message on screen
