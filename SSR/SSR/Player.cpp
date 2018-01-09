@@ -7,6 +7,7 @@
 Player::Player()
 {
 	position = sf::Vector2f(800, 600);
+	hp = 100;
 	velocity = 0;
 	orientation = 0; //Facing north.
 	maxSpeed = 8;

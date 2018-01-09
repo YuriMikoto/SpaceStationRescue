@@ -10,6 +10,8 @@ Game::Game() :
 {
 	setupFontAndText(); // load font 
 	setupSprite(); // load texture
+
+	gameState = GameState::MAIN_MENU;
 }
 
 
@@ -20,6 +22,7 @@ Game::~Game()
 void Game::initializeObjects()
 {
 	p1 = Player();
+	p1.SetupSprite();
 }
 
 void Game::run()
@@ -48,21 +51,24 @@ void Game::run()
 void Game::processEvents()
 {
 	sf::Event event;
-	if (p1.forward == true)
+	if (gameState == GameState::GAME_MODE)
 	{
-		p1.Thrusters(p1.thrustSpeed);
-	}
-	if (p1.backwards == true)
-	{
-		p1.Thrusters(p1.thrustSpeed*-1);
-	}
-	if (p1.left == true)
-	{
-		p1.Steer(p1.rotSpeed*-1);
-	}
-	if (p1.right == true)
-	{
-		p1.Steer(p1.rotSpeed);
+		if (p1.forward == true)
+		{
+			p1.Thrusters(p1.thrustSpeed);
+		}
+		if (p1.backwards == true)
+		{
+			p1.Thrusters(p1.thrustSpeed*-1);
+		}
+		if (p1.left == true)
+		{
+			p1.Steer(p1.rotSpeed*-1);
+		}
+		if (p1.right == true)
+		{
+			p1.Steer(p1.rotSpeed);
+		}
 	}
 	while (m_window.pollEvent(event))
 	{
@@ -77,58 +83,62 @@ void Game::processEvents()
 				m_exitGame = true;
 			}
 
-			else if (event.key.code == sf::Keyboard::W)
+			if (gameState == GameState::GAME_MODE)
 			{
-				//p1.Thrusters(2);
-				p1.forward = true;
+				if (event.key.code == sf::Keyboard::W)
+				{
+					p1.forward = true;
+				}
+				else if (event.key.code == sf::Keyboard::S)
+				{
+					p1.backwards = true;
+				}
+				else if (event.key.code == sf::Keyboard::A)
+				{
+					p1.left = true;
+				}
+				else if (event.key.code == sf::Keyboard::D)
+				{
+					p1.right = true;
+				}
 			}
-			else if (event.key.code == sf::Keyboard::S)
-			{
-				//p1.Thrusters(-2);
-				p1.backwards = true;
-			}
-			else if (event.key.code == sf::Keyboard::A)
-			{
-				//p1.Steer(-6);
-				p1.left = true;
-			}
-			else if (event.key.code == sf::Keyboard::D)
-			{
-				//p1.Steer(6);
-				p1.right = true;
-			}
-
 		}
 		if (event.type == sf::Event::KeyReleased)
 		{
-
-			if (event.key.code == sf::Keyboard::W)
+			if (gameState == GameState::GAME_MODE)
 			{
-				//p1.Thrusters(2);
-				p1.forward = false;
+				if (event.key.code == sf::Keyboard::W)
+				{
+					p1.forward = false;
+				}
+				else if (event.key.code == sf::Keyboard::S)
+				{
+					p1.backwards = false;
+				}
+				else if (event.key.code == sf::Keyboard::A)
+				{
+					p1.left = false;
+				}
+				else if (event.key.code == sf::Keyboard::D)
+				{
+					p1.right = false;
+				}
+				else if (event.key.code == sf::Keyboard::Space)
+				{//Fire a bullet.
+					p1.Fire();
+				}
+				else if (event.key.code == sf::Keyboard::BackSpace)
+				{//Debug command. Reduces player's HP.
+					p1.damageHP(20);
+				}
 			}
-			else if (event.key.code == sf::Keyboard::S)
+			else if (gameState == GameState::MAIN_MENU || gameState == GameState::GAME_OVER)
 			{
-				//p1.Thrusters(-2);
-				p1.backwards = false;
-			}
-			else if (event.key.code == sf::Keyboard::A)
-			{
-				//p1.Steer(-6);
-				p1.left = false;
-			}
-			else if (event.key.code == sf::Keyboard::D)
-			{
-				//p1.Steer(6);
-				p1.right = false;
-			}
-			else if (event.key.code == sf::Keyboard::Space)
-			{//Fire a bullet.
-				p1.Fire();
-			}
-			else if (event.key.code == sf::Keyboard::BackSpace)
-			{//Debug command. Reduces player's HP.
-				p1.damageHP(2);
+				if (event.key.code == sf::Keyboard::Return)
+				{
+					gameState = GameState::GAME_MODE;
+					initializeObjects();
+				}
 			}
 		}
 	}
@@ -145,43 +155,86 @@ void Game::update(sf::Time t_deltaTime)
 		m_window.close();
 	}
 
-	p1.Update();
+	if (gameState == GameState::MAIN_MENU)
+	{
 
-	/*if (p1.getHP() <= 0)
-	{//TODO: Game over.
+	}
+
+	else if (gameState == GameState::GAME_MODE)
+	{
+		p1.Update();
+		checkStateChange();
+
+		for (int i = 0; i < p1.getBullets().size(); i++)
+		{//Go through each bullet; if alive, update position.
+			if (p1.getBullets()[i]->alive)
+			{
+				p1.getBullets()[i]->Update();
+			}
+		}
+
+		/*I am bad at iterators. This is my weak attempt at deleting dead bullets. It's a start, maybe? Also, probably should move these to a separate function...
+		vector<Bullet*> p1Bullets = p1.getBullets();
+		vector<Bullet*>::iterator p1BulletItr;
+
+		for (p1BulletItr = p1Bullets.begin(); p1BulletItr != p1Bullets.end(); p1BulletItr++)
+		{//Go through each bullet again outside of first iteration, remove dead bullets.
+		if (!(*p1BulletItr)->alive)
+		{
+		//p1.getBullets().erase(p1.getBullets().begin() + i);
+		p1Bullets.erase(p1BulletItr);
+		//p1BulletItr--;
+		}
+		}*/
+
+		//Check vector of player bullets for dead bullets (!alive) and remove them from the vector.
+		//Update vector of enemies.
+		//Update vector of enemy bullets and missiles. Remove dead bullets.
+		//Update vector of Workers.
+
+		//Check for collision between player bullet and any enemy.
+		//Check for collision between player and enemy bullet, missile, or body.
+		//Check for collision between player and Worker. 
+	}
+
+	else if (gameState == GameState::GAME_OVER)
+	{
+
+	}
+}
+
+/**
+ * Used every update to check if the game's state should change.
+ *
+ * During MAIN_MENU:
+ * If the player chooses to start the game, gameState becomes GAME_MODE and all objects are initialized.
+ * 
+ * During GAME_MODE:
+ * Determines if any win/loss conditions are met, and changes gameState to GAME_OVER.
+ * If no Workers remain on the field, game ends with a win. [NOT IMPLEMENTED]
+ * If the player's health ever reaches zero, game ends with a loss.
+ * 
+ * During GAME_OVER:
+ * If the player chooses to return to the main menu, gameState becomes MAIN_MENU.
+ * If the player chooses to restart the game, gameState becomes GAME_MODE and all objects are reinitialized.
+ */
+void Game::checkStateChange()
+{
+	/*if (gameState == GameState::MAIN_MENU)
+	{Leave this out for now. No main menu exists.
 
 	}*/
-
-	for (int i = 0; i < p1.getBullets().size(); i++)
-	{//Go through each bullet; if alive, update position.
-		if (p1.getBullets()[i]->alive)
+	/*else*/ if (gameState == GameState::GAME_MODE)
+	{
+		if (p1.getHP() <= 0)
 		{
-			p1.getBullets()[i]->Update();
+			gameState = GameState::GAME_OVER;
 		}
 	}
+	/*else if (gameState == GameState::GAME_OVER)
+	{Leave this out for now. This is already determined in event handling.
 
-	/*I am bad at iterators. This is my weak attempt at deleting dead bullets. It's a start, maybe?
-	vector<Bullet*> p1Bullets = p1.getBullets();
-	vector<Bullet*>::iterator p1BulletItr;
-
-	for (p1BulletItr = p1Bullets.begin(); p1BulletItr != p1Bullets.end(); p1BulletItr++)
-	{//Go through each bullet again outside of first iteration, remove dead bullets.
-	if (!(*p1BulletItr)->alive)
-	{
-	//p1.getBullets().erase(p1.getBullets().begin() + i);
-	p1Bullets.erase(p1BulletItr);
-	//p1BulletItr--;
-	}
 	}*/
-
-	//Check vector of player bullets for dead bullets (!alive) and remove them from the vector.
-	//Update vector of enemies.
-	//Update vector of enemy bullets and missiles. Remove dead bullets.
-	//Update vector of Workers.
-
-	//Check for collision between player bullet and any enemy.
-	//Check for collision between player and enemy bullet, missile, or body.
-	//Check for collision between player and Worker. 
 }
 
 /// <summary>
@@ -189,23 +242,36 @@ void Game::update(sf::Time t_deltaTime)
 /// </summary>
 void Game::render()
 {
+
 	m_window.clear(sf::Color::Black);
 	//m_window.draw(m_welcomeMessage);
 	//m_window.draw(m_logoSprite);
 
-	p1.Draw(m_window);
-	for (int i = 0; i < p1.getBullets().size(); i++)
+	if (gameState == GameState::MAIN_MENU)
 	{
-		if (p1.getBullets()[i]->alive)
-		{
-			p1.getBullets()[i]->Draw(m_window);
-		}
+		m_window.draw(m_mainMenuMessage);
 	}
 
-	//Draw HP gauge. Changes width depending on HP, does not change height.
-	m_hpGauge.setSize(sf::Vector2f(p1.getHP() * 8, m_hpGauge.getSize().y));
-	m_window.draw(m_hpGaugeBack);
-	m_window.draw(m_hpGauge);
+	else if (gameState == GameState::GAME_MODE)
+	{
+		p1.Draw(m_window);
+		for (int i = 0; i < p1.getBullets().size(); i++)
+		{
+			if (p1.getBullets()[i]->alive)
+			{
+				p1.getBullets()[i]->Draw(m_window);
+			}
+		}
+
+		//Draw HP gauge. Changes width depending on HP, does not change height.
+		m_hpGauge.setSize(sf::Vector2f(p1.getHP() * 8, m_hpGauge.getSize().y));
+		m_window.draw(m_hpGaugeBack);
+		m_window.draw(m_hpGauge);
+	}
+	else if (gameState == GameState::GAME_OVER)
+	{
+		m_window.draw(m_gameOverMessage);
+	}
 
 	m_window.display();
 }
@@ -219,14 +285,23 @@ void Game::setupFontAndText()
 	{
 		std::cout << "problem loading arial black font" << std::endl;
 	}
-	m_welcomeMessage.setFont(m_ArialBlackfont);
-	m_welcomeMessage.setString("SFML Game");
-	m_welcomeMessage.setStyle(sf::Text::Underlined | sf::Text::Italic | sf::Text::Bold);
-	m_welcomeMessage.setPosition(40.0f, 40.0f);
-	m_welcomeMessage.setCharacterSize(80);
-	m_welcomeMessage.setOutlineColor(sf::Color::Red);
-	m_welcomeMessage.setFillColor(sf::Color::Black);
-	m_welcomeMessage.setOutlineThickness(3.0f);
+	m_mainMenuMessage.setFont(m_ArialBlackfont);
+	m_mainMenuMessage.setString("SPACE STATION RESCUE\nPress Enter to start game.\nPress Escape to quit.");
+	m_mainMenuMessage.setStyle(sf::Text::Italic | sf::Text::Bold);
+	m_mainMenuMessage.setPosition(40.0f, 40.0f);
+	m_mainMenuMessage.setCharacterSize(80);
+	m_mainMenuMessage.setOutlineColor(sf::Color::Black);
+	m_mainMenuMessage.setFillColor(sf::Color::White);
+	m_mainMenuMessage.setOutlineThickness(3.0f);
+
+	m_gameOverMessage.setFont(m_ArialBlackfont);
+	m_gameOverMessage.setString("YOU DIED\nPress Enter to restart.");
+	m_gameOverMessage.setStyle(sf::Text::Italic | sf::Text::Bold);
+	m_gameOverMessage.setPosition(40.0f, 40.0f);
+	m_gameOverMessage.setCharacterSize(80);
+	m_gameOverMessage.setOutlineColor(sf::Color::Black);
+	m_gameOverMessage.setFillColor(sf::Color::White);
+	m_gameOverMessage.setOutlineThickness(3.0f);
 
 }
 
@@ -235,13 +310,13 @@ void Game::setupFontAndText()
 /// </summary>
 void Game::setupSprite()
 {
-	if (!m_logoTexture.loadFromFile("ASSETS\\IMAGES\\SFML-LOGO.png"))
+	/*if (!m_logoTexture.loadFromFile("ASSETS\\IMAGES\\SFML-LOGO.png"))
 	{
 		// simple error message if previous call fails
 		std::cout << "problem loading logo" << std::endl;
 	}
 	m_logoSprite.setTexture(m_logoTexture);
-	m_logoSprite.setPosition(300.0f, 180.0f);
+	m_logoSprite.setPosition(300.0f, 180.0f);*/
 
 	m_hpGaugeBack = sf::RectangleShape(sf::Vector2f(804, 24));
 	m_hpGaugeBack.setPosition(sf::Vector2f(10, 10));

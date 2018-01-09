@@ -31,7 +31,7 @@ public:
 private:
 	float pi = 3.14159265359;
 
-	int hp = 100; //Health value. Reduced when damaged. Game over if this reaches 0.
+	int hp; //Health value. Reduced when damaged. Game over if this reaches 0.
 
 	sf::Vector2f position;
 	float velocity; //Current speed. Paired with orientation.
