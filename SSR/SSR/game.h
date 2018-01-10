@@ -20,7 +20,7 @@ private:
 	void processEvents();
 	void update(sf::Time t_deltaTime);
 	void render();
-	
+	void handleCollisions();
 	void setupFontAndText();
 	void setupSprite();
 	void initializeObjects();
@@ -33,6 +33,9 @@ private:
 	bool m_exitGame; // control exiting game
 
 	Player p1;
+	sf::FloatRect *pRect;
+	sf::FloatRect *tempDisplacement;
+	sf::RectangleShape rect;
 };
 
 #endif // !GAME

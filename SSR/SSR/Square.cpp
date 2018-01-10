@@ -2,22 +2,38 @@
 
 
 
-Block::Block()
+Square::Square()
 {
 }
 
-Block::Block(sf::Vector2f position, sf::Vector2f dimensions, int w):pos(position), size(dimensions), weight(w)
+Square::Square(sf::Vector2f position, sf::Vector2f dimensions, int w):pos(position), size(dimensions), weight(w)
 {
-	center.x = size.x / 2;
-	center.y = size.y / 2;
+	center = pos;
+
+
+	center.x += size.x / 2;
+	center.y += size.y / 2;
+
+	rect.top = pos.y;
+	rect.left = pos.x;
+	rect.height = size.y;
+	rect.width = size.x;
 }
 
 
-Block::~Block()
+Square::~Square()
 {
 }
 
-void Block::setTileType(int i)
+void Square::setupRect()
+{
+	rect.left = pos.x;
+	rect.top = pos.y;
+	rect.width = size.x;
+	rect.height = size.y;
+}
+
+void Square::setTileType(int i)
 {
 	type = i;
 	switch (i)
@@ -39,18 +55,18 @@ void Block::setTileType(int i)
 	}
 }
 
-void Block::setTileType(tileTypes i)
+void Square::setTileType(tileTypes i)
 {
 	tileType = i;
 	type = tileType;
 }
 
-tileTypes Block::returnTiletype()
+tileTypes Square::returnTiletype()
 {
 	return tileType;
 }
 
-int Block::returnTileTypeNum()
+int Square::returnTileTypeNum()
 {
 	return type;
 }

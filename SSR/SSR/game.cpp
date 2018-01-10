@@ -5,8 +5,13 @@
 
 Game::Game() :
 	m_window{ sf::VideoMode{ 1600, 1200, 32 }, "Space Station Rescue" },
+
 	m_exitGame{false} //when true game will exit
 {
+	rect.setOutlineColor(sf::Color::White);
+	rect.setOutlineThickness(1);
+	pRect = &p1.getRect();
+
 	setupFontAndText(); // load font 
 	setupSprite(); // load texture
 }
@@ -19,6 +24,7 @@ Game::~Game()
 void Game::initializeObjects()
 {
 	p1 = Player();
+	*pRect = p1.getRect();
 }
 
 void Game::run()
@@ -47,6 +53,7 @@ void Game::run()
 void Game::processEvents()
 {
 	sf::Event event;
+	handleCollisions();
 	if (p1.forward == true)
 	{
 		p1.Thrusters(p1.thrustSpeed);
@@ -144,13 +151,45 @@ void Game::update(sf::Time t_deltaTime)
 /// </summary>
 void Game::render()
 {
-	//m_window.clear(sf::Color::White);
+	rect.setPosition(pRect->left-p1.getRadius(), pRect->top-p1.getRadius());
+	rect.setSize(sf::Vector2f(pRect->width, pRect->height));
+	m_window.clear(sf::Color::Magenta);
 	//m_window.draw(m_welcomeMessage);
 	//m_window.draw(m_logoSprite);
-
-	p1.Draw(m_window);
 	gameGrid.render(m_window);
+	m_window.draw(rect);
+	p1.Draw(m_window);
+
 	m_window.display();
+}
+
+void Game::handleCollisions()
+{
+	pRect->top -= p1.getRadius();
+	pRect->left -= p1.getRadius();
+	
+	tempDisplacement=&gameGrid.checkCollisionRectangleVector(*pRect);
+	if (tempDisplacement->top != 0 && tempDisplacement->left != 0) {
+	//std::cout << "x: " << tempDisplacement->left << " y: " << tempDisplacement->top << std::endl;
+		if (tempDisplacement->height != pRect->height)
+		{
+		pRect->top-=tempDisplacement->height;
+		}
+		if (tempDisplacement->width != pRect->width)
+		{
+		pRect->left -= tempDisplacement->width;
+		}
+
+
+
+		p1.getPos().x = pRect->left+p1.getRadius();
+		p1.getPos().y = pRect->top+p1.getRadius();
+
+
+	}
+
+		pRect->top += p1.getRadius();
+		pRect->left += p1.getRadius();
 }
 
 /// <summary>

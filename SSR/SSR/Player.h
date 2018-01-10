@@ -20,10 +20,18 @@ public:
 	float thrustSpeed=0.1;
 	float frictionDiv = 1.1;
 	float rotSpeed=0.02;
+	float &getRadius();
+	sf::Vector2f&getPos();
+	sf::Vector2f&getOrigin();
+	sf::FloatRect&getRect();
 private:
 	float pi = 3.14159265359;
 
 	sf::Vector2f position;
+	sf::Vector2f origin;
+	sf::FloatRect rect;
+	float radius;
+
 	float velocity; //Current speed. Paired with orientation.
 	float orientation; //Current direction. Paired with velocity.
 	sf::Texture texture;

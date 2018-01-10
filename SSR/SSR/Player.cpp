@@ -28,6 +28,8 @@ void Player::Update()
 	}
 	position.x += velocity * std::sin(orientation * pi/180);
 	position.y -= velocity * std::cos(orientation * pi/180);
+	rect.top = position.y;
+	rect.left = position.x;
 }
 
 void Player::Thrusters(float acceleration)
@@ -47,6 +49,26 @@ void Player::Steer(float steering)
 	orientation += steering;
 }
 
+float & Player::getRadius()
+{
+	return radius;
+}
+
+sf::Vector2f & Player::getPos()
+{
+	return position;
+}
+
+sf::Vector2f & Player::getOrigin()
+{
+	return origin+position;
+}
+
+sf::FloatRect & Player::getRect()
+{
+	return rect;
+}
+
 void Player::SetupSprite()
 {
 	if (!texture.loadFromFile("ASSETS\\IMAGES\\PlayerShip.png"))
@@ -59,4 +81,8 @@ void Player::SetupSprite()
 
 	spr.setScale(sf::Vector2f(0.5f, 0.5f));
 	spr.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
+	origin = sf::Vector2f(texture.getSize().x / 2, texture.getSize().y / 2);
+	radius = texture.getSize().x / 2;
+	rect.width = radius * 2;
+	rect.height = radius * 2;
 }
