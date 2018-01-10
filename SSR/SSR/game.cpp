@@ -23,6 +23,11 @@ void Game::initializeObjects()
 {
 	p1 = Player();
 	p1.SetupSprite();
+
+	for (int i = 0; i < WORKER_COUNT; i++)
+	{
+		workers.push_back(new Worker());
+	}
 }
 
 void Game::run()
@@ -190,7 +195,35 @@ void Game::update(sf::Time t_deltaTime)
 		//Check vector of player bullets for dead bullets (!alive) and remove them from the vector.
 		//Update vector of enemies.
 		//Update vector of enemy bullets and missiles. Remove dead bullets.
-		//Update vector of Workers.
+		//Update vector of Workers. End game if no workers are alive.
+
+		for (int i = 0; i < workers.size(); i++)
+		{
+			if (p1.getPosition().x + p1.getDimensions().x > workers[i]->getPosition().x &&
+				p1.getPosition().x < workers[i]->getPosition().x + workers[i]->getDimensions().x &&
+				p1.getPosition().y + p1.getDimensions().y > workers[i]->getPosition().y &&
+				p1.getPosition().y < workers[i]->getPosition().y + workers[i]->getDimensions().y)
+			{
+				workers[i]->alive = false;
+			}
+		}
+
+		int workersleft = 0; //Number of Workers remaining on the field. 
+
+		for (int i = 0; i < workers.size(); i++)
+		{
+			if (workers[i]->alive)
+			{
+				workers[i]->Update();
+				workersleft++;
+			}
+		}
+
+		if (workersleft == 0)
+		{
+			gameState = GameState::GAME_OVER;
+			//You win. Yes, this tells you you died; don't worry about it.
+		}
 
 		//Check for collision between player bullet and any enemy.
 		//Check for collision between player and enemy bullet, missile, or body.
@@ -263,8 +296,16 @@ void Game::render()
 			}
 		}
 
+		for (int i = 0; i < workers.size(); i++)
+		{
+			if (workers[i]->alive)
+			{
+				workers[i]->Draw(m_window);
+			}
+		}
+
 		//Draw HP gauge. Changes width depending on HP, does not change height.
-		m_hpGauge.setSize(sf::Vector2f(p1.getHP() * 8, m_hpGauge.getSize().y));
+		m_hpGauge.setSize(sf::Vector2f(p1.getHP() * 8.0f, m_hpGauge.getSize().y));
 		m_window.draw(m_hpGaugeBack);
 		m_window.draw(m_hpGauge);
 	}
@@ -322,7 +363,7 @@ void Game::setupSprite()
 	m_hpGaugeBack.setPosition(sf::Vector2f(10, 10));
 	m_hpGaugeBack.setFillColor(sf::Color(32, 32, 32, 255));
 
-	m_hpGauge = sf::RectangleShape(sf::Vector2f(p1.getHP() * 8, 20));
+	m_hpGauge = sf::RectangleShape(sf::Vector2f(p1.getHP() * 8.0f, 20));
 	m_hpGauge.setPosition(sf::Vector2f(m_hpGaugeBack.getPosition().x + 2, m_hpGaugeBack.getPosition().y + 2));
 	m_hpGauge.setFillColor(sf::Color::Red);
 

@@ -12,7 +12,7 @@ public:
 
 	bool alive = true;
 private:
-	float pi = 3.14159265359;
+	float pi = 3.14159265359f;
 
 	sf::Vector2f position;
 	float velocity; //Current speed. Paired with orientation.

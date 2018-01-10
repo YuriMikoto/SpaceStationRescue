@@ -14,6 +14,8 @@ public:
 	void Update();
 	void SetupSprite();
 	std::vector<Bullet*> getBullets();
+	sf::Vector2f getPosition();
+	sf::Vector2f getDimensions();
 	int getHP();
 	void damageHP(int dmg);
 
@@ -29,7 +31,7 @@ public:
 	float frictionDiv;
 	float rotSpeed;
 private:
-	float pi = 3.14159265359;
+	float pi = 3.14159265359f;
 
 	int hp; //Health value. Reduced when damaged. Game over if this reaches 0.
 

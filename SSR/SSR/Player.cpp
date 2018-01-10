@@ -11,9 +11,9 @@ Player::Player()
 	velocity = 0;
 	orientation = 0; //Facing north.
 	maxSpeed = 8;
-	thrustSpeed = 0.01;
-	frictionDiv = 1.1;
-	rotSpeed = 0.03;
+	thrustSpeed = 0.01f;
+	frictionDiv = 1.1f;
+	rotSpeed = 0.03f;
 }
 
 /**
@@ -113,6 +113,22 @@ std::vector<Bullet*> Player::getBullets()
 }
 
 /**
+* Returns the player's current position.
+*/
+sf::Vector2f Player::getPosition()
+{
+	return position;
+}
+
+/**
+* Returns the width and height of the player's sprite as a vector.
+*/
+sf::Vector2f Player::getDimensions()
+{
+	return sf::Vector2f(texture.getSize().x * spr.getScale().x, texture.getSize().y * spr.getScale().y);
+}
+
+/**
  * Returns the player's remaining health. 
  */
 int Player::getHP()
@@ -141,7 +157,7 @@ void Player::damageHP(int dmg)
 
 /**
  * Called at game start.
- * Sets up the sprite for use with all future bullets.
+ * Sets up the sprite for use with player.
  */
 void Player::SetupSprite()
 {
@@ -154,5 +170,5 @@ void Player::SetupSprite()
 	spr.setTexture(texture);
 
 	spr.setScale(sf::Vector2f(0.5f, 0.5f));
-	spr.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
+	spr.setOrigin(texture.getSize().x / 2.0f, texture.getSize().y / 2.0f);
 }

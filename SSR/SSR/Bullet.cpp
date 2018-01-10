@@ -62,5 +62,5 @@ void Bullet::SetupSprite()
 	spr.setTexture(texture);
 
 	spr.setScale(sf::Vector2f(0.5f, 0.5f));
-	spr.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
+	spr.setOrigin(texture.getSize().x / 2.0f, texture.getSize().y / 2.0f);
 }

@@ -4,6 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Player.h"
+#include "Worker.h"
 
 class Game
 {
@@ -16,6 +17,7 @@ public:
 	void run();
 
 private:
+	const int WORKER_COUNT = 3; //Number of workers that the game generates at startup. 
 
 	void processEvents();
 	void update(sf::Time t_deltaTime);
@@ -44,6 +46,8 @@ private:
 	GameState gameState;
 
 	Player p1;
+
+	std::vector<Worker*> workers;
 };
 
 #endif // !GAME
