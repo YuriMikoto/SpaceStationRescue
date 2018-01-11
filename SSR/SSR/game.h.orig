@@ -4,12 +4,8 @@
 
 #include <SFML/Graphics.hpp>
 #include "Player.h"
-<<<<<<< HEAD
-#include "Grid.h"
-=======
 #include "Worker.h"
-
->>>>>>> master
+#include "Grid.h"
 class Game
 {
 public:
@@ -26,18 +22,21 @@ private:
 	void processEvents();
 	void update(sf::Time t_deltaTime);
 	void render();
-<<<<<<< HEAD
 	void handleCollisions();
-=======
-
 	void checkStateChange();
 	
->>>>>>> master
 	void setupFontAndText();
 	void setupSprite();
 	void initializeObjects();
+<<<<<<< HEAD
 	Grid gameGrid;
+=======
+	void initializeCamera();
+	void updateCamera();
+
+>>>>>>> master
 	sf::RenderWindow m_window; // main SFML window
+	sf::View camera;
 	sf::Font m_ArialBlackfont; // font used by message
 	sf::Text m_gameOverMessage; // text used for message on screen
 	sf::Text m_mainMenuMessage; // text used for message on screen
@@ -54,14 +53,11 @@ private:
 	GameState gameState;
 
 	Player p1;
-<<<<<<< HEAD
 	sf::FloatRect *pRect;
 	sf::FloatRect *tempDisplacement;
-	sf::RectangleShape rect;
-=======
 
 	std::vector<Worker*> workers;
->>>>>>> master
+	sf::RectangleShape rect;
 };
 
 #endif // !GAME
