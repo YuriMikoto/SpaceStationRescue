@@ -99,6 +99,33 @@ sf::FloatRect Grid::checkCollisionRectangleVector(sf::FloatRect rect)
 			temp.height = 0;
 			temp.width = 0;
 		}
+		else
+		{
+			if (rect.top + rect.height > collisionVec[i]->rect.top)
+			{
+				temp.top = -1;
+			}
+			else if (rect.top < collisionVec[i]->rect.top + collisionVec[i]->rect.height)
+			{
+				temp.top = 1;
+			}
+			else
+			{
+				temp.top = 0;
+			}
+			if (rect.left + rect.width > collisionVec[i]->rect.left)
+			{
+
+			}
+			else if (rect.left < collisionVec[i]->rect.left + collisionVec[i]->rect.width)
+			{
+
+			}
+			else
+			{
+
+			}
+		}
 	}
 	return temp;
 }
