@@ -1,31 +1,43 @@
 #pragma once
 #include <SFML\Graphics.hpp>
 #include <vector>//might be useful for a vector of bullets
+
+#include "Bullet.h"
+
 class Player
 {
 public:
 	Player();
 	~Player();
 	void Draw(sf::RenderWindow &window);
+	void DrawBullets(sf::RenderWindow &window);
 	void Update();
 	void SetupSprite();
+	std::vector<Bullet*> getBullets();
+	sf::Vector2f getPosition();
+	sf::Vector2f getDimensions();
+	int getHP();
+	void damageHP(int dmg);
 
 	void Thrusters(float acceleration);
 	void Steer(float steering);
+	void Fire();
 	bool forward;
 	bool backwards;
 	bool left;
 	bool right;
-	float maxSpeed=8;
-	float thrustSpeed=0.1;
-	float frictionDiv = 1.1;
-	float rotSpeed=0.02;
+	float maxSpeed;
+	float thrustSpeed;
+	float frictionDiv;
+	float rotSpeed;
 	float &getRadius();
 	sf::Vector2f&getPos();
 	sf::Vector2f&getOrigin();
 	sf::FloatRect&getRect();
 private:
-	float pi = 3.14159265359;
+	float pi = 3.14159265359f;
+
+	int hp; //Health value. Reduced when damaged. Game over if this reaches 0.
 
 	sf::Vector2f position;
 	sf::Vector2f origin;
@@ -36,5 +48,5 @@ private:
 	float orientation; //Current direction. Paired with velocity.
 	sf::Texture texture;
 	sf::Sprite spr;
+	std::vector<Bullet*> bullets;
 };
-
