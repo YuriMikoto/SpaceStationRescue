@@ -353,6 +353,8 @@ void Game::render()
 
 void Game::handleCollisions()
 {
+	sf::FloatRect workerTempRect;
+	//player block
 	pRect->top -= p1.getRadius();
 	pRect->left -= p1.getRadius();
 	int collisionBump = 2;
@@ -373,13 +375,20 @@ void Game::handleCollisions()
 		//pRect->top += tempDisplacement->height*tempDisplacement->top;
 		pRect->top += collisionBump*tempDisplacement->top;
 		pRect->left += collisionBump*tempDisplacement->left;
-
-
-
-
 		p1.getPos().x = pRect->left;
 		p1.getPos().y = pRect->top;
-		
+	}
+	//end of player block
+	for (size_t i = 0; i < workers.size(); i++)
+	{
+		workerTempRect = sf::FloatRect(workers[i]->getPosition(), workers[i]->getDimensions());
+		tempDisplacement = &gameGrid.checkCollisionRectangleVector(workerTempRect);
+		if (tempDisplacement->top != 0 || tempDisplacement->left != 0)
+		{
+			workerTempRect.top += collisionBump*tempDisplacement->top;
+			workerTempRect.left += collisionBump*tempDisplacement->left;
+		workers[i]->setPosition(sf::Vector2f(workerTempRect.left,workerTempRect.top));
+		}
 
 	}
 

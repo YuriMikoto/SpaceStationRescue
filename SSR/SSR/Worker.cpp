@@ -97,3 +97,8 @@ sf::Vector2f Worker::getDimensions()
 {
 	return sf::Vector2f(texture.getSize().x * spr.getScale().x, texture.getSize().y * spr.getScale().y);
 }
+
+void Worker::setPosition(sf::Vector2f newPos)
+{
+	position = newPos;
+}

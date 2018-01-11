@@ -11,7 +11,7 @@ public:
 	void SetupSprite();
 	sf::Vector2f getPosition();
 	sf::Vector2f getDimensions();
-
+	void setPosition(sf::Vector2f newPos);
 	bool alive = true;
 private:
 	sf::Vector2f position;

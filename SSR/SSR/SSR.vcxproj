@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="Levels.cpp" />
     <ClCompile Include="NPC.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
@@ -31,6 +32,7 @@
   <ItemGroup>
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Grid.h" />
+    <ClInclude Include="Levels.h" />
     <ClInclude Include="NPC.h" />
     <ClInclude Include="EnemyTypes.h" />
     <ClInclude Include="Game.h" />

@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include "Square.h"
+#include "Levels.h"
 #include "SFML\Graphics.hpp"
 class Grid
 {
@@ -20,7 +21,7 @@ public:
 	sf::FloatRect checkCollisionRectangleVector(sf::FloatRect rect);
 	bool checkCollisionRectangleBool(sf::FloatRect rect);
 	bool checkCollisionCircleBool(sf::Vector2f originPos, float radius);
-	
+	void loadLevel();
 
 private:
 	sf::Texture texture;
@@ -32,5 +33,6 @@ private:
 	void loadFiles();
 	void testingAssignMethod();
 	int tileSize;
+	Levels lvlSet;
 };
 

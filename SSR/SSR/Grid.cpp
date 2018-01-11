@@ -8,7 +8,8 @@ Grid::Grid()
 
 	collisionVec.reserve(100);
 	loadFiles();
-	testingAssignMethod();
+	//testingAssignMethod();
+	loadLevel();
 	findCollisionTiles();
 
 }
@@ -16,6 +17,7 @@ Grid::Grid()
 Grid::Grid(int vectorX, int vectorY, int startPos, int)
 {
 	collisionVec.reserve(100);
+	loadFiles();
 	findCollisionTiles();
 }
 
@@ -48,6 +50,31 @@ void Grid::testingAssignMethod()
 		{
 			tempBlock = Square(sf::Vector2f(tileSize*o+100, 100), sf::Vector2f(tileSize, tileSize), 0);
 			tempBlock.setTileType(o);
+			//tempBlock.setupRect();
+			tempVec.push_back(tempBlock);
+
+		}
+		squareVec.push_back(tempVec);
+		tempVec.clear();
+	}
+
+}
+void Grid::loadLevel()
+{
+	squareVec.reserve(30);
+	std::vector<Square> tempVec;
+	Square tempBlock;
+	//assigns starting position
+	tempBlock.pos.x = 0;
+	tempBlock.pos.y = 0;
+	tempVec.reserve(30);
+	for (size_t i = 0; i < lvlSet.lvl1x; i++)
+	{
+		//		squareVec[i+1].reserve(20);
+		for (size_t o = 0; o < lvlSet.lvl1y; o++)
+		{
+			tempBlock = Square(sf::Vector2f(tileSize*o + 100, 100), sf::Vector2f(tileSize, tileSize), 0);
+			tempBlock.setTileType(lvlSet.level1[i][o]);
 			//tempBlock.setupRect();
 			tempVec.push_back(tempBlock);
 
@@ -151,6 +178,7 @@ bool Grid::checkCollisionCircleBool(sf::Vector2f originPos, float radius)
 	}
 	return temp;
 }
+
 
 void Grid::loadFiles()
 {
