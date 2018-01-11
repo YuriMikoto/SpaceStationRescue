@@ -208,23 +208,6 @@ void Game::update(sf::Time t_deltaTime)
 			}
 		}
 
-		int workersleft = 0; //Number of Workers remaining on the field. 
-
-		for (int i = 0; i < workers.size(); i++)
-		{
-			if (workers[i]->alive)
-			{
-				workers[i]->Update();
-				workersleft++;
-			}
-		}
-
-		if (workersleft == 0)
-		{
-			gameState = GameState::GAME_OVER;
-			//You win. Yes, this tells you you died; don't worry about it.
-		}
-
 		//Check for collision between player bullet and any enemy.
 		//Check for collision between player and enemy bullet, missile, or body.
 		//Check for collision between player and Worker. 
@@ -238,36 +221,40 @@ void Game::update(sf::Time t_deltaTime)
 
 /**
  * Used every update to check if the game's state should change.
- *
- * During MAIN_MENU:
- * If the player chooses to start the game, gameState becomes GAME_MODE and all objects are initialized.
  * 
  * During GAME_MODE:
  * Determines if any win/loss conditions are met, and changes gameState to GAME_OVER.
- * If no Workers remain on the field, game ends with a win. [NOT IMPLEMENTED]
+ * If no Workers remain on the field, game ends with a win.
  * If the player's health ever reaches zero, game ends with a loss.
- * 
- * During GAME_OVER:
- * If the player chooses to return to the main menu, gameState becomes MAIN_MENU.
- * If the player chooses to restart the game, gameState becomes GAME_MODE and all objects are reinitialized.
+ * In either case, alter the game over screen's string to display the correct message.
  */
 void Game::checkStateChange()
 {
-	/*if (gameState == GameState::MAIN_MENU)
-	{Leave this out for now. No main menu exists.
-
-	}*/
-	/*else*/ if (gameState == GameState::GAME_MODE)
+	if (gameState == GameState::GAME_MODE)
 	{
 		if (p1.getHP() <= 0)
 		{
+			m_gameOverMessage.setString("YOU DIED\nPress Enter to retry.");
+			gameState = GameState::GAME_OVER;
+		}
+
+		int workersleft = 0; //Number of Workers remaining on the field. 
+
+		for (int i = 0; i < workers.size(); i++)
+		{
+			if (workers[i]->alive)
+			{
+				workers[i]->Update();
+				workersleft++;
+			}
+		}
+
+		if (workersleft == 0)
+		{
+			m_gameOverMessage.setString("MISSION ACCOMPLISHED\nPress Enter to restart.");
 			gameState = GameState::GAME_OVER;
 		}
 	}
-	/*else if (gameState == GameState::GAME_OVER)
-	{Leave this out for now. This is already determined in event handling.
-
-	}*/
 }
 
 /// <summary>
