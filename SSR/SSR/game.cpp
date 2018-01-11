@@ -151,13 +151,13 @@ void Game::update(sf::Time t_deltaTime)
 /// </summary>
 void Game::render()
 {
-	rect.setPosition(pRect->left-p1.getRadius(), pRect->top-p1.getRadius());
-	rect.setSize(sf::Vector2f(pRect->width, pRect->height));
+	//rect.setPosition(pRect->left-p1.getRadius(), pRect->top-p1.getRadius());
+	//rect.setSize(sf::Vector2f(pRect->width, pRect->height));
 	m_window.clear(sf::Color::Magenta);
 	//m_window.draw(m_welcomeMessage);
 	//m_window.draw(m_logoSprite);
 	gameGrid.render(m_window);
-	m_window.draw(rect);
+	//m_window.draw(rect);
 	p1.Draw(m_window);
 
 	m_window.display();
@@ -167,29 +167,35 @@ void Game::handleCollisions()
 {
 	pRect->top -= p1.getRadius();
 	pRect->left -= p1.getRadius();
-	
+	int collisionBump = 2;
 	tempDisplacement=&gameGrid.checkCollisionRectangleVector(*pRect);
-	if (tempDisplacement->top != 0 && tempDisplacement->left != 0) {
+		pRect->top += p1.getRadius();
+		pRect->left += p1.getRadius();
+	if (tempDisplacement->top != 0 || tempDisplacement->left != 0) {
 	//std::cout << "x: " << tempDisplacement->left << " y: " << tempDisplacement->top << std::endl;
-		if (tempDisplacement->height != pRect->height)
+		/*if (tempDisplacement->height != pRect->height)
 		{
 		pRect->top-=tempDisplacement->height;
 		}
 		if (tempDisplacement->width != pRect->width)
 		{
 		pRect->left -= tempDisplacement->width;
-		}
+		}*/
+		//pRect->left += tempDisplacement->width*tempDisplacement->left;
+		//pRect->top += tempDisplacement->height*tempDisplacement->top;
+		pRect->top += collisionBump*tempDisplacement->top;
+		pRect->left += collisionBump*tempDisplacement->left;
 
 
 
-		p1.getPos().x = pRect->left+p1.getRadius();
-		p1.getPos().y = pRect->top+p1.getRadius();
 
+		p1.getPos().x = pRect->left;
+		p1.getPos().y = pRect->top;
+		
 
 	}
 
-		pRect->top += p1.getRadius();
-		pRect->left += p1.getRadius();
+
 }
 
 /// <summary>
