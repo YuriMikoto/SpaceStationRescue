@@ -68,12 +68,12 @@ void Grid::loadLevel()
 	tempBlock.pos.x = 0;
 	tempBlock.pos.y = 0;
 	tempVec.reserve(30);
-	for (size_t i = 0; i < lvlSet.lvl1x; i++)
+	for (size_t i = 0; i <= lvlSet.lvl1x; i++)
 	{
 		//		squareVec[i+1].reserve(20);
-		for (size_t o = 0; o < lvlSet.lvl1y; o++)
+		for (size_t o = 0; o <= lvlSet.lvl1y; o++)
 		{
-			tempBlock = Square(sf::Vector2f(tileSize*o + 100, 100), sf::Vector2f(tileSize, tileSize), 0);
+			tempBlock = Square(sf::Vector2f(tileSize*o, tileSize*i), sf::Vector2f(tileSize, tileSize), 0);
 			tempBlock.setTileType(lvlSet.level1[i][o]);
 			//tempBlock.setupRect();
 			tempVec.push_back(tempBlock);
@@ -113,36 +113,34 @@ std::vector<std::vector<Square>>& Grid::getVector()
 	return squareVec;
 }
 
-sf::FloatRect Grid::checkCollisionRectangleVector(sf::FloatRect rect)
+sf::Vector2f& Grid::checkCollisionRectangleVector(sf::FloatRect rect)
 {
 	//return sf::Vector2f();
-	sf::FloatRect temp;
+	sf::Vector2f temp;
 	for (size_t i = 0; i < collisionVec.size(); i++)
 	{
 		if (!collisionVec[i]->rect.intersects(rect))
 		{
-			temp.top = 0;
-			temp.left = 0;
-			temp.height = 0;
-			temp.width = 0;
+			temp.x = 0;
+			temp.y = 0;
 		}
 		else
 		{
 			if (rect.top + rect.height / 2 > collisionVec[i]->center.y)
 			{
-				temp.top = +1;
+				temp.y = +1;
 			}
 			else
 			{
-				temp.top = -1;
+				temp.y = -1;
 			}
 			if (rect.left + rect.width / 2 > collisionVec[i]->center.x)
 			{
-				temp.left = 1;
+				temp.y = 1;
 			}
 			else
 			{
-				temp.left = -1;
+				temp.y = -1;
 			}
 		}
 		

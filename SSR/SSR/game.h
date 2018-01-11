@@ -50,7 +50,7 @@ private:
 
 	Player p1;
 	sf::FloatRect *pRect;
-	sf::FloatRect *tempDisplacement;
+	sf::Vector2f *tempDisplacement;
 
 	std::vector<Worker*> workers;
 	sf::RectangleShape rect;

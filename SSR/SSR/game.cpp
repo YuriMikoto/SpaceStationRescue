@@ -361,7 +361,7 @@ void Game::handleCollisions()
 	tempDisplacement=&gameGrid.checkCollisionRectangleVector(*pRect);
 		pRect->top += p1.getRadius();
 		pRect->left += p1.getRadius();
-	if (tempDisplacement->top != 0 || tempDisplacement->left != 0) {
+	if (tempDisplacement->y != 0 || tempDisplacement->x != 0) {
 	//std::cout << "x: " << tempDisplacement->left << " y: " << tempDisplacement->top << std::endl;
 		/*if (tempDisplacement->height != pRect->height)
 		{
@@ -373,8 +373,8 @@ void Game::handleCollisions()
 		}*/
 		//pRect->left += tempDisplacement->width*tempDisplacement->left;
 		//pRect->top += tempDisplacement->height*tempDisplacement->top;
-		pRect->top += collisionBump*tempDisplacement->top;
-		pRect->left += collisionBump*tempDisplacement->left;
+		pRect->top += collisionBump*tempDisplacement->y;
+		pRect->left += collisionBump*tempDisplacement->x;
 		p1.getPos().x = pRect->left;
 		p1.getPos().y = pRect->top;
 	}
@@ -383,10 +383,10 @@ void Game::handleCollisions()
 	{
 		workerTempRect = sf::FloatRect(workers[i]->getPosition(), workers[i]->getDimensions());
 		tempDisplacement = &gameGrid.checkCollisionRectangleVector(workerTempRect);
-		if (tempDisplacement->top != 0 || tempDisplacement->left != 0)
+		if (tempDisplacement->y != 0 || tempDisplacement->x != 0)
 		{
-			workerTempRect.top += collisionBump*tempDisplacement->top;
-			workerTempRect.left += collisionBump*tempDisplacement->left;
+			workerTempRect.top += collisionBump*tempDisplacement->y;
+			workerTempRect.left += collisionBump*tempDisplacement->x;
 		workers[i]->setPosition(sf::Vector2f(workerTempRect.left,workerTempRect.top));
 		}
 

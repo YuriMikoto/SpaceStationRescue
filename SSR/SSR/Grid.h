@@ -18,7 +18,7 @@ public:
 	void render();
 	void render(sf::RenderWindow &win);
 	std::vector<std::vector<Square>> & getVector();
-	sf::FloatRect checkCollisionRectangleVector(sf::FloatRect rect);
+	sf::Vector2f& checkCollisionRectangleVector(sf::FloatRect rect);
 	bool checkCollisionRectangleBool(sf::FloatRect rect);
 	bool checkCollisionCircleBool(sf::Vector2f originPos, float radius);
 	void loadLevel();
