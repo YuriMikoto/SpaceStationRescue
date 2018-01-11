@@ -28,8 +28,11 @@ private:
 	void setupFontAndText();
 	void setupSprite();
 	void initializeObjects();
+	void initializeCamera();
+	void updateCamera();
 
 	sf::RenderWindow m_window; // main SFML window
+	sf::View camera;
 	sf::Font m_ArialBlackfont; // font used by message
 	sf::Text m_gameOverMessage; // text used for message on screen
 	sf::Text m_mainMenuMessage; // text used for message on screen

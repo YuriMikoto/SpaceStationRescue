@@ -19,6 +19,11 @@ Game::~Game()
 {
 }
 
+/**
+ * Creates game objects in the world.
+ * NOTE: Creates three workers each time the game starts. If the player dies, the worker list is not reset.
+ * This means that dying and restarting may result in 4-6 workers being present, with more on each restart.
+ */
 void Game::initializeObjects()
 {
 	p1 = Player();
@@ -28,6 +33,19 @@ void Game::initializeObjects()
 	{
 		workers.push_back(new Worker());
 	}
+
+	initializeCamera();
+}
+
+/**
+ * Creates the camera at initial setup.
+ * Note to self: if this is similar enough to updateCamera, I may combine the two.
+ */
+void Game::initializeCamera()
+{
+	camera.setCenter(sf::Vector2f(800, 600));
+	camera.setSize(sf::Vector2f(1600, 1200));
+	camera.setViewport(sf::FloatRect(0, 0, 1, 1));
 }
 
 void Game::run()
@@ -211,12 +229,26 @@ void Game::update(sf::Time t_deltaTime)
 		//Check for collision between player bullet and any enemy.
 		//Check for collision between player and enemy bullet, missile, or body.
 		//Check for collision between player and Worker. 
+
+		updateCamera();
 	}
 
 	else if (gameState == GameState::GAME_OVER)
 	{
 
 	}
+}
+
+/**
+ * Updates the camera's position to focus on the player at all times. 
+ * Later on, this will include updating the radar as well, using a second camera.
+ */
+void Game::updateCamera()
+{
+	camera.setCenter(sf::Vector2f(p1.getPosition()));
+	camera.setSize(sf::Vector2f(1600, 1200)); 
+	
+	m_window.setView(camera);
 }
 
 /**
@@ -262,18 +294,20 @@ void Game::checkStateChange()
 /// </summary>
 void Game::render()
 {
-
 	m_window.clear(sf::Color::Black);
 	//m_window.draw(m_welcomeMessage);
 	//m_window.draw(m_logoSprite);
 
 	if (gameState == GameState::MAIN_MENU)
 	{
+		m_window.setView(m_window.getDefaultView());
 		m_window.draw(m_mainMenuMessage);
 	}
 
 	else if (gameState == GameState::GAME_MODE)
 	{
+		m_window.setView(camera);
+
 		p1.Draw(m_window);
 		for (int i = 0; i < p1.getBullets().size(); i++)
 		{
@@ -291,6 +325,7 @@ void Game::render()
 			}
 		}
 
+		m_window.setView(m_window.getDefaultView());
 		//Draw HP gauge. Changes width depending on HP, does not change height.
 		m_hpGauge.setSize(sf::Vector2f(p1.getHP() * 8.0f, m_hpGauge.getSize().y));
 		m_window.draw(m_hpGaugeBack);
@@ -298,6 +333,7 @@ void Game::render()
 	}
 	else if (gameState == GameState::GAME_OVER)
 	{
+		m_window.setView(m_window.getDefaultView());
 		m_window.draw(m_gameOverMessage);
 	}
 
