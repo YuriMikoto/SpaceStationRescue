@@ -183,7 +183,7 @@ void Player::damageHP(int dmg)
  */
 void Player::SetupSprite()
 {
-	if (!texture.loadFromFile("ASSETS\\IMAGES\\PlayerShip.png"))
+	if (!texture.loadFromFile("ASSETS\\IMAGES\\altShip.png"))
 	{
 		// simple error message if previous call fails
 		//std::cout << "problem loading logo" << std::endl;

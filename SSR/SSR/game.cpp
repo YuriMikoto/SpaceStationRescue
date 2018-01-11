@@ -12,7 +12,7 @@ Game::Game() :
 	rect.setOutlineColor(sf::Color::White);
 	rect.setOutlineThickness(1);
 	pRect = &p1.getRect();
-
+	
 	setupFontAndText(); // load font 
 	setupSprite(); // load texture
 
@@ -271,10 +271,10 @@ void Game::render()
 {
 	//rect.setPosition(pRect->left-p1.getRadius(), pRect->top-p1.getRadius());
 	//rect.setSize(sf::Vector2f(pRect->width, pRect->height));
-	m_window.clear(sf::Color::Magenta);
+	m_window.clear(sf::Color::Black);
 	//m_window.draw(m_welcomeMessage);
 	//m_window.draw(m_logoSprite);
-	gameGrid.render(m_window);
+
 	//m_window.draw(rect);
 	if (gameState == GameState::MAIN_MENU)
 	{
@@ -283,6 +283,7 @@ void Game::render()
 
 	else if (gameState == GameState::GAME_MODE)
 	{
+	gameGrid.render(m_window);
 		p1.Draw(m_window);
 		for (int i = 0; i < p1.getBullets().size(); i++)
 		{
