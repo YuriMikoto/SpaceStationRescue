@@ -89,6 +89,75 @@ void Player::Fire()
 }
 
 /**
+ * Activates a held powerup.
+ * Effect depends on the powerup type in the used slot.
+ *
+ * @param which - Indicates which slot to use. Value of 0 indicates Q key, value of 1 indicates E key.
+ */
+void Player::activatePowerup(bool which)
+{
+	if (which == 0)
+	{//If 0 is passed in, Q key was pressed; use the powerup in that slot.
+		if (powerupQ == Powerup::HEALING)
+		{
+			damageHP(-50);
+		}
+
+		powerupQ = Powerup::NONE;
+	}
+	else
+	{//If 1 is passed in, E key was pressed; use the powerup in that slot.
+		if (powerupE == Powerup::HEALING)
+		{
+			damageHP(-50);
+		}
+
+		powerupE = Powerup::NONE;
+	}
+
+	//Remove powerup from inventory.
+}
+
+/**
+ * When a powerup is picked up, this adds it to the player's inventory.
+ * Attempts to find an empty slot and add it there. If none exists, the powerup is not picked up.
+ * Returns true if the item was successfully added, to indicate it should be removed from the game world. False means it should stay.
+ * 
+ * @param item - Type of powerup to be added.
+ */
+bool Player::addPowerup(int item)
+{
+	if (powerupQ == Powerup::NONE)
+	{
+		powerupQ = item;
+		return true;
+	}
+	else if (powerupE == Powerup::NONE)
+	{
+		powerupE = item;
+		return true;
+	}
+	return false;
+}
+
+/**
+ * Returns the type of the powerup in the stated slot.
+ *
+ * @param which - Indicates which slot to use. Value of 0 indicates Q key, value of 1 indicates E key.
+ */
+int Player::getPowerup(bool which)
+{
+	if (which == 0)
+	{
+		return powerupQ;
+	}
+	else
+	{
+		return powerupE;
+	}
+}
+
+/**
  * Iterate through the player's vector of Bullets and draw each one.
  *
  * @param window - Specifies the window to draw to.

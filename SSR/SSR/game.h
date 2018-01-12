@@ -22,6 +22,7 @@ private:
 	void processEvents();
 	void update(sf::Time t_deltaTime);
 	void render();
+	void drawUI();
 	void drawRadar();
 
 	void checkStateChange();
@@ -31,6 +32,7 @@ private:
 	void initializeObjects();
 	void initializeCamera();
 	void updateViewports();
+	void handlePowerups();
 
 	sf::RenderWindow m_window; // main SFML window
 	sf::View camera;
@@ -40,6 +42,8 @@ private:
 	sf::Text m_mainMenuMessage; // text used for message on screen
 	sf::Texture m_logoTexture; // texture used for sfml logo
 	sf::Sprite m_logoSprite; // sprite used for sfml logo
+	sf::Texture m_texHealing; //Texture for the Healing powerup.
+	sf::Texture m_texNoPower; //Texture for no powerup.
 	sf::RectangleShape m_hpGauge; //A rectangle for the HP gauge.
 	sf::RectangleShape m_hpGaugeBack; //Rectangle for the black back of the HP gauge.
 	bool m_exitGame; // control exiting game
@@ -53,6 +57,9 @@ private:
 	Player p1;
 
 	std::vector<Worker*> workers;
+	std::vector<Powerup*> powerups;
+	const int POWERUP_TIME_MAX = 600; //Time to reset to when a powerup spawns.
+	int timeToPowerup = 10; //Time remaining before another powerup spawns.
 };
 
 #endif // !GAME

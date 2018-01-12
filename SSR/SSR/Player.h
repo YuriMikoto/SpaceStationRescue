@@ -3,6 +3,7 @@
 #include <vector>//might be useful for a vector of bullets
 
 #include "Bullet.h"
+#include "Powerup.h"
 
 class Player
 {
@@ -30,6 +31,13 @@ public:
 	float thrustSpeed;
 	float frictionDiv;
 	float rotSpeed;
+
+	int powerupQ = Powerup::NONE;
+	int powerupE = Powerup::NONE;
+	int getPowerup(bool which);
+	void activatePowerup(bool which);
+	bool addPowerup(int item);
+
 private:
 	float pi = 3.14159265359f;
 

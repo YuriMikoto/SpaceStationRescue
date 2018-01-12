@@ -39,7 +39,6 @@ void Game::initializeObjects()
 
 /**
  * Creates the camera at initial setup.
- * Note to self: if this is similar enough to updateCamera, I may combine the two.
  */
 void Game::initializeCamera()
 {
@@ -48,7 +47,7 @@ void Game::initializeCamera()
 	camera.setViewport(sf::FloatRect(0, 0, 1, 1));
 
 	radar.setSize(sf::Vector2f(3200, 2400));
-	radar.setViewport(sf::FloatRect(0.75, 0.01, 0.24, 0.24));
+	radar.setViewport(sf::FloatRect(0.75f, 0.01f, 0.24f, 0.24f));
 }
 
 void Game::run()
@@ -157,6 +156,14 @@ void Game::processEvents()
 				{//Debug command. Reduces player's HP.
 					p1.damageHP(20);
 				}
+				else if (event.key.code == sf::Keyboard::Q)
+				{
+					p1.activatePowerup(0);
+				}
+				else if (event.key.code == sf::Keyboard::E)
+				{
+					p1.activatePowerup(1);
+				}
 			}
 			else if (gameState == GameState::MAIN_MENU || gameState == GameState::GAME_OVER)
 			{
@@ -181,10 +188,10 @@ void Game::update(sf::Time t_deltaTime)
 		m_window.close();
 	}
 
-	if (gameState == GameState::MAIN_MENU)
+	/*if (gameState == GameState::MAIN_MENU)
 	{
 
-	}
+	}*/
 
 	else if (gameState == GameState::GAME_MODE)
 	{
@@ -216,18 +223,23 @@ void Game::update(sf::Time t_deltaTime)
 		//Check vector of player bullets for dead bullets (!alive) and remove them from the vector.
 		//Update vector of enemies.
 		//Update vector of enemy bullets and missiles. Remove dead bullets.
-		//Update vector of Workers. End game if no workers are alive.
 
+		//Check for collision between player and any worker. If one occurs, worker is saved.
 		for (int i = 0; i < workers.size(); i++)
 		{
-			if (p1.getPosition().x + p1.getDimensions().x > workers[i]->getPosition().x &&
-				p1.getPosition().x < workers[i]->getPosition().x + workers[i]->getDimensions().x &&
-				p1.getPosition().y + p1.getDimensions().y > workers[i]->getPosition().y &&
-				p1.getPosition().y < workers[i]->getPosition().y + workers[i]->getDimensions().y)
+			if (workers[i]->alive)
 			{
-				workers[i]->alive = false;
+				if (p1.getPosition().x + p1.getDimensions().x > workers[i]->getPosition().x &&
+					p1.getPosition().x < workers[i]->getPosition().x + workers[i]->getDimensions().x &&
+					p1.getPosition().y + p1.getDimensions().x > workers[i]->getPosition().y &&
+					p1.getPosition().y < workers[i]->getPosition().y + workers[i]->getDimensions().y)
+				{
+					workers[i]->alive = false;
+				}
 			}
 		}
+
+		handlePowerups();
 
 		//Check for collision between player bullet and any enemy.
 		//Check for collision between player and enemy bullet, missile, or body.
@@ -236,14 +248,49 @@ void Game::update(sf::Time t_deltaTime)
 		updateViewports();
 	}
 
-	else if (gameState == GameState::GAME_OVER)
+	/*else if (gameState == GameState::GAME_OVER)
 	{
 
+	}*/
+}
+
+/**
+ * Update function specifically for powerups. 
+ * Decrements the timeToPowerup counter. When it hits 0, spawns a new powerup randomly in the area, and resets it. 
+ * Checks for collision between the player and each powerup object.
+ */
+void Game::handlePowerups()
+{
+	timeToPowerup--;
+	if (timeToPowerup <= 0)
+	{
+		timeToPowerup = POWERUP_TIME_MAX;
+
+		powerups.push_back(new Powerup());
+	}
+
+	//Check for collision between player and powerup. If one occurs, add powerup to inventory if there is a space.
+	for (int i = 0; i < powerups.size(); i++)
+	{
+		if (powerups[i]->alive)
+		{
+			if (p1.getPosition().x + p1.getDimensions().x > powerups[i]->getPosition().x &&
+				p1.getPosition().x < powerups[i]->getPosition().x + powerups[i]->getDimensions().x &&
+				p1.getPosition().y + p1.getDimensions().y > powerups[i]->getPosition().y &&
+				p1.getPosition().y < powerups[i]->getPosition().y + powerups[i]->getDimensions().y)
+			{
+				if (p1.addPowerup(powerups[i]->getType()))
+				{
+					//Remove powerup from the vector if adding a powerup was successful.
+					powerups[i]->alive = false;
+				}
+			}
+		}
 	}
 }
 
 /**
- * Updates the camera's position to focus on the player at all times. 
+ * Updates the camera's position to focus on the player at all times.
  * Later on, this will include updating the radar as well, using a second camera.
  */
 void Game::updateViewports()
@@ -326,13 +373,15 @@ void Game::render()
 			}
 		}
 
-		m_window.setView(m_window.getDefaultView());
-		//Draw HP gauge. Changes width depending on HP, does not change height.
-		m_hpGauge.setSize(sf::Vector2f(p1.getHP() * 8.0f, m_hpGauge.getSize().y));
-		m_window.draw(m_hpGaugeBack);
-		m_window.draw(m_hpGauge);
+		for (int i = 0; i < powerups.size(); i++)
+		{
+			if (powerups[i]->alive)
+			{
+				powerups[i]->Draw(m_window);
+			}
+		}
 
-		drawRadar();
+		drawUI();
 	}
 	else if (gameState == GameState::GAME_OVER)
 	{
@@ -343,6 +392,48 @@ void Game::render()
 	m_window.display();
 }
 
+/**
+ * Draw HP gauge and powerup icons, and call to drawRadar.
+ */
+void Game::drawUI()
+{
+	m_window.setView(m_window.getDefaultView());
+	//Draw HP gauge. Changes width depending on HP, does not change height.
+	m_hpGauge.setSize(sf::Vector2f(p1.getHP() * 8.0f, m_hpGauge.getSize().y));
+	m_window.draw(m_hpGaugeBack);
+	m_window.draw(m_hpGauge);
+
+	//Draw powerup icons.
+	sf::RectangleShape powerQIcon(sf::Vector2f(50, 50));
+	powerQIcon.setPosition(12, 40);
+	if (p1.getPowerup(0) == Powerup::NONE)
+	{
+		powerQIcon.setTexture(&m_texNoPower);
+	}
+	else if (p1.getPowerup(0) == Powerup::HEALING)
+	{
+		powerQIcon.setTexture(&m_texHealing);
+	}
+	m_window.draw(powerQIcon);
+
+	sf::RectangleShape powerEIcon(sf::Vector2f(50, 50));
+	powerEIcon.setPosition(72, 40);
+	if (p1.getPowerup(1) == Powerup::NONE)
+	{
+		powerEIcon.setTexture(&m_texNoPower);
+	}
+	else if (p1.getPowerup(1) == Powerup::HEALING)
+	{
+		powerEIcon.setTexture(&m_texHealing);
+	}
+	m_window.draw(powerEIcon);
+
+	drawRadar();
+}
+
+/**
+ * Draw entity positions at points on the radar view.
+ */
 void Game::drawRadar()
 {
 	m_window.setView(radar);
@@ -367,6 +458,17 @@ void Game::drawRadar()
 			m_window.draw(workerDot);
 		}
 	}
+
+	for (int i = 0; i < powerups.size(); i++)
+	{
+		if (powerups[i]->alive)
+		{
+			sf::CircleShape powerupDot(16);
+			powerupDot.setPosition(powerups[i]->getPosition().x - 8, powerups[i]->getPosition().y - 8);
+			powerupDot.setFillColor(sf::Color::Yellow);
+			m_window.draw(powerupDot);
+		}
+	}
 }
 
 /// <summary>
@@ -379,7 +481,7 @@ void Game::setupFontAndText()
 		std::cout << "problem loading arial black font" << std::endl;
 	}
 	m_mainMenuMessage.setFont(m_ArialBlackfont);
-	m_mainMenuMessage.setString("SPACE STATION RESCUE\nPress Enter to start game.\nPress Escape to quit.");
+	m_mainMenuMessage.setString("SPACE STATION RESCUE\nObjective: Rescue all Workers.\n\nPress Enter to start game.\nPress Escape to quit.\n\nW/S/A/D: Move\nSpace: Fire\nQ/E: Use Held Items");
 	m_mainMenuMessage.setStyle(sf::Text::Italic | sf::Text::Bold);
 	m_mainMenuMessage.setPosition(40.0f, 40.0f);
 	m_mainMenuMessage.setCharacterSize(80);
@@ -418,6 +520,15 @@ void Game::setupSprite()
 	m_hpGauge = sf::RectangleShape(sf::Vector2f(p1.getHP() * 8.0f, 20));
 	m_hpGauge.setPosition(sf::Vector2f(m_hpGaugeBack.getPosition().x + 2, m_hpGaugeBack.getPosition().y + 2));
 	m_hpGauge.setFillColor(sf::Color::Red);
+
+	if (!m_texHealing.loadFromFile("ASSETS\\IMAGES\\PowerupHealing.png"))
+	{
+		std::cout << "Failed to load PowerupHealing.png." << std::endl;
+	}
+	if (!m_texNoPower.loadFromFile("ASSETS\\IMAGES\\PowerupBlank.png"))
+	{
+		std::cout << "Failed to load PowerupBlank.png." << std::endl;
+	}
 
 	p1.SetupSprite();
 }
