@@ -22,6 +22,7 @@ private:
 	void processEvents();
 	void update(sf::Time t_deltaTime);
 	void render();
+	void drawRadar();
 
 	void checkStateChange();
 	
@@ -29,10 +30,11 @@ private:
 	void setupSprite();
 	void initializeObjects();
 	void initializeCamera();
-	void updateCamera();
+	void updateViewports();
 
 	sf::RenderWindow m_window; // main SFML window
 	sf::View camera;
+	sf::View radar;
 	sf::Font m_ArialBlackfont; // font used by message
 	sf::Text m_gameOverMessage; // text used for message on screen
 	sf::Text m_mainMenuMessage; // text used for message on screen
