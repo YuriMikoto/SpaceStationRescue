@@ -142,6 +142,7 @@ sf::Vector2f& Grid::checkCollisionRectangleVector(sf::FloatRect rect)
 			{
 				temp.y = -1;
 			}
+			return temp;
 		}
 		
 	}

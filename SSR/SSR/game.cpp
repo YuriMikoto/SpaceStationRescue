@@ -86,19 +86,19 @@ void Game::processEvents()
 
 		if (p1.forward == true)
 		{
-			p1.Thrusters(p1.thrustSpeed);
+			p1.Thrusters(p1.thrustSpeed*6);
 		}
 		if (p1.backwards == true)
 		{
-			p1.Thrusters(p1.thrustSpeed*-1);
+			p1.Thrusters(p1.thrustSpeed*-6);
 		}
 		if (p1.left == true)
 		{
-			p1.Steer(p1.rotSpeed*-1);
+			p1.Steer(p1.rotSpeed*-6);
 		}
 		if (p1.right == true)
 		{
-			p1.Steer(p1.rotSpeed);
+			p1.Steer(p1.rotSpeed*6);
 		}
 		handleCollisions();
 	}

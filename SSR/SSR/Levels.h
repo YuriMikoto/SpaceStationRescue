@@ -26,6 +26,6 @@ public:
 		{ 2,2,2,2,1,1,1,1,2,2,2,1,1,1,1,1,1,1,2,2,2 }
 	};
 	int level2[10][10];
-	int lvl1x = 20, lvl1y = 21, lvl2x = 10, lvl2y = 30;
+	int lvl1x = 19, lvl1y = 20, lvl2x = 10, lvl2y = 30;
 
 };
