@@ -14,6 +14,8 @@ Player::Player()
 	thrustSpeed = 0.01f;
 	frictionDiv = 1.1f;
 	rotSpeed = 0.03f;
+	rect.top = position.y;
+	rect.left = position.x;
 }
 
 /**

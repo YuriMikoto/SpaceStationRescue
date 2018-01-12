@@ -80,9 +80,10 @@ void Game::run()
 void Game::processEvents()
 {
 	sf::Event event;
-	handleCollisions();
+
 	if (gameState == GameState::GAME_MODE)
 	{
+
 		if (p1.forward == true)
 		{
 			p1.Thrusters(p1.thrustSpeed);
@@ -99,6 +100,7 @@ void Game::processEvents()
 		{
 			p1.Steer(p1.rotSpeed);
 		}
+		handleCollisions();
 	}
 	while (m_window.pollEvent(event))
 	{
@@ -355,12 +357,13 @@ void Game::handleCollisions()
 {
 	sf::FloatRect workerTempRect;
 	//player block
-	pRect->top -= p1.getRadius();
-	pRect->left -= p1.getRadius();
+	float p1Rad = p1.getRadius();
+	pRect->top -= p1Rad;
+	pRect->left -= p1Rad;
 	int collisionBump = 2;
 	tempDisplacement=&gameGrid.checkCollisionRectangleVector(*pRect);
-		pRect->top += p1.getRadius();
-		pRect->left += p1.getRadius();
+		pRect->top += p1Rad;
+		pRect->left += p1Rad;
 	if (tempDisplacement->y != 0 || tempDisplacement->x != 0) {
 	//std::cout << "x: " << tempDisplacement->left << " y: " << tempDisplacement->top << std::endl;
 		/*if (tempDisplacement->height != pRect->height)
