@@ -46,6 +46,9 @@ void Game::initializeCamera()
 	camera.setCenter(sf::Vector2f(800, 600));
 	camera.setSize(sf::Vector2f(1600, 1200));
 	camera.setViewport(sf::FloatRect(0, 0, 1, 1));
+
+	radar.setSize(sf::Vector2f(3200, 2400));
+	radar.setViewport(sf::FloatRect(0.75, 0.01, 0.24, 0.24));
 }
 
 void Game::run()
@@ -230,7 +233,7 @@ void Game::update(sf::Time t_deltaTime)
 		//Check for collision between player and enemy bullet, missile, or body.
 		//Check for collision between player and Worker. 
 
-		updateCamera();
+		updateViewports();
 	}
 
 	else if (gameState == GameState::GAME_OVER)
@@ -243,12 +246,10 @@ void Game::update(sf::Time t_deltaTime)
  * Updates the camera's position to focus on the player at all times. 
  * Later on, this will include updating the radar as well, using a second camera.
  */
-void Game::updateCamera()
+void Game::updateViewports()
 {
 	camera.setCenter(sf::Vector2f(p1.getPosition()));
-	camera.setSize(sf::Vector2f(1600, 1200)); 
-	
-	m_window.setView(camera);
+	radar.setCenter(sf::Vector2f(p1.getPosition()));
 }
 
 /**
@@ -330,6 +331,8 @@ void Game::render()
 		m_hpGauge.setSize(sf::Vector2f(p1.getHP() * 8.0f, m_hpGauge.getSize().y));
 		m_window.draw(m_hpGaugeBack);
 		m_window.draw(m_hpGauge);
+
+		drawRadar();
 	}
 	else if (gameState == GameState::GAME_OVER)
 	{
@@ -338,6 +341,32 @@ void Game::render()
 	}
 
 	m_window.display();
+}
+
+void Game::drawRadar()
+{
+	m_window.setView(radar);
+
+	sf::RectangleShape radarBack(sf::Vector2f(3200, 2400));
+	radarBack.setPosition(sf::Vector2f(p1.getPosition().x - 1600, p1.getPosition().y - 1200));
+	radarBack.setFillColor(sf::Color(128, 0, 0, 128));
+	m_window.draw(radarBack);
+
+	sf::CircleShape p1Dot(50);
+	p1Dot.setPosition(p1.getPosition().x-25, p1.getPosition().y-25);
+	p1Dot.setFillColor(sf::Color::Green);
+
+	m_window.draw(p1Dot);
+	for (int i = 0; i < workers.size(); i++)
+	{
+		if (workers[i]->alive)
+		{
+			sf::CircleShape workerDot(32);
+			workerDot.setPosition(workers[i]->getPosition().x - 16, workers[i]->getPosition().y - 16);
+			workerDot.setFillColor(sf::Color::Cyan);
+			m_window.draw(workerDot);
+		}
+	}
 }
 
 /// <summary>
