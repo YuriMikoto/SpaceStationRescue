@@ -89,10 +89,6 @@ void Grid::update()
 {
 }
 
-void Grid::render()
-{
-	std::cout << "defunct renderer caled"<<std::endl;
-}
 
 void Grid::render(sf::RenderWindow & win)
 {	
@@ -117,9 +113,10 @@ sf::Vector2f& Grid::checkCollisionRectangleVector(sf::FloatRect rect)
 {
 	//return sf::Vector2f();
 	sf::Vector2f temp;
+	int displacement = 2;
 	for (size_t i = 0; i < collisionVec.size(); i++)
 	{
-		if (!collisionVec[i]->rect.intersects(rect))
+		if (!collisionVec[i]->rect.intersects(rect,CollisionRect))
 		{
 			temp.x = 0;
 			temp.y = 0;
@@ -128,19 +125,19 @@ sf::Vector2f& Grid::checkCollisionRectangleVector(sf::FloatRect rect)
 		{
 			if (rect.top + rect.height / 2 > collisionVec[i]->center.y)
 			{
-				temp.y = +1;
+				temp.y = displacement*CollisionRect.height;
 			}
 			else
 			{
-				temp.y = -1;
+				temp.y = -1*displacement * CollisionRect.height;
 			}
 			if (rect.left + rect.width / 2 > collisionVec[i]->center.x)
 			{
-				temp.y = 1;
+				temp.x = displacement * CollisionRect.width;
 			}
 			else
 			{
-				temp.y = -1;
+				temp.x = -1*displacement* CollisionRect.width;
 			}
 			return temp;
 		}

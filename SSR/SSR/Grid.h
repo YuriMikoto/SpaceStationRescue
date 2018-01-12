@@ -34,5 +34,6 @@ private:
 	void testingAssignMethod();
 	int tileSize;
 	Levels lvlSet;
+	sf::FloatRect CollisionRect;
 };
 

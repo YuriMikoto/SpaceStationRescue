@@ -34,6 +34,7 @@ public:
 	sf::Vector2f&getPos();
 	sf::Vector2f&getOrigin();
 	sf::FloatRect&getRect();
+		bool xStop = false, yStop = false;
 private:
 	float pi = 3.14159265359f;
 

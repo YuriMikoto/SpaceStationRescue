@@ -47,8 +47,23 @@ void Player::Update()
 	{
 		velocity /= frictionDiv;
 	}
+	if (!xStop)
+	{
 	position.x += velocity * std::sin(orientation * pi / 180);
+	}
+	else
+	{
+		int i =1;
+	}
+	if (!yStop)
+	{
 	position.y -= velocity * std::cos(orientation * pi / 180);
+	}
+	else
+	{
+		int i=1;
+	}
+
 	rect.top = position.y;
 	rect.left = position.x;
 }
@@ -196,7 +211,7 @@ void Player::SetupSprite()
 	spr.setScale(sf::Vector2f(0.5f, 0.5f));
 	spr.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
 	origin = sf::Vector2f(texture.getSize().x / 2, texture.getSize().y / 2);
-	radius = texture.getSize().x / 2.5;
+	radius = texture.getSize().x / 3.5f;
 	rect.width = radius * 2;
 	rect.height = radius * 2;
 }

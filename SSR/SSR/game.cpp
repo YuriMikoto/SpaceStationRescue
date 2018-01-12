@@ -318,6 +318,7 @@ void Game::render()
 
 	else if (gameState == GameState::GAME_MODE)
 	{
+		m_window.draw(bgSprite);
 		m_window.setView(camera);
 	gameGrid.render(m_window);
 
@@ -349,38 +350,60 @@ void Game::render()
 		m_window.setView(m_window.getDefaultView());
 		m_window.draw(m_gameOverMessage);
 	}
-
+	m_window.draw(overlay);
 	m_window.display();
 }
 
 void Game::handleCollisions()
 {
 	sf::FloatRect workerTempRect;
+	float tempX=0, tempY=0;
 	//player block
 	float p1Rad = p1.getRadius();
 	pRect->top -= p1Rad;
 	pRect->left -= p1Rad;
-	int collisionBump = 2;
+	int collisionBump = 5;
 	tempDisplacement=&gameGrid.checkCollisionRectangleVector(*pRect);
 		pRect->top += p1Rad;
+		
 		pRect->left += p1Rad;
-	if (tempDisplacement->y != 0 || tempDisplacement->x != 0) {
-	//std::cout << "x: " << tempDisplacement->left << " y: " << tempDisplacement->top << std::endl;
-		/*if (tempDisplacement->height != pRect->height)
-		{
-		pRect->top-=tempDisplacement->height;
-		}
-		if (tempDisplacement->width != pRect->width)
-		{
-		pRect->left -= tempDisplacement->width;
-		}*/
-		//pRect->left += tempDisplacement->width*tempDisplacement->left;
-		//pRect->top += tempDisplacement->height*tempDisplacement->top;
-		pRect->top += collisionBump*tempDisplacement->y;
-		pRect->left += collisionBump*tempDisplacement->x;
-		p1.getPos().x = pRect->left;
-		p1.getPos().y = pRect->top;
+		tempX= tempDisplacement->x;
+		tempY = tempDisplacement->y;
+
+	if (tempX == 0) {
+
+		p1.xStop = false;
 	}
+	else if(tempX >= -200 && tempX <= 200)
+	{
+
+		
+		pRect->left += tempX;
+		p1.getPos().x = pRect->left;
+		p1.xStop = true;
+		
+
+
+
+	}
+
+
+	if (tempY == 0) {
+		p1.yStop = false;
+
+	}
+	else if(tempY >= -200 && tempY <= 200)
+	{
+
+		pRect->top += tempY;
+
+		p1.yStop = true;
+		p1.getPos().y = pRect->top;
+		
+
+
+	}
+
 	//end of player block
 	for (size_t i = 0; i < workers.size(); i++)
 	{
@@ -447,6 +470,10 @@ void Game::setupSprite()
 	m_hpGauge = sf::RectangleShape(sf::Vector2f(p1.getHP() * 8.0f, 20));
 	m_hpGauge.setPosition(sf::Vector2f(m_hpGaugeBack.getPosition().x + 2, m_hpGaugeBack.getPosition().y + 2));
 	m_hpGauge.setFillColor(sf::Color::Red);
-
+	crtOverlay.loadFromFile("ASSETS\\IMAGES\\retroOverlay.png");
+	bg.loadFromFile("ASSETS\\IMAGES\\bg.png");
+	overlay.setTexture(crtOverlay);
+	overlay.setPosition(0, 0);
+	bgSprite.setTexture(bg);
 	p1.SetupSprite();
 }

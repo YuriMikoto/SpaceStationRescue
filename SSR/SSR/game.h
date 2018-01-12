@@ -24,7 +24,10 @@ private:
 	void render();
 	void handleCollisions();
 	void checkStateChange();
-	
+	sf::Sprite overlay;
+	sf::Texture crtOverlay;
+	sf::Sprite bgSprite;
+	sf::Texture bg;
 	void setupFontAndText();
 	void setupSprite();
 	void initializeObjects();
